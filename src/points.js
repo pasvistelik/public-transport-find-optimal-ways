@@ -1,6 +1,6 @@
 ﻿import Point from './point';
-import GeoCoords from './../geo-coords-functions/geoCoords';
-var distance = GeoCoords.distance;
+
+import distance from 'geo-coords-distance';
 
 
 function getTimeForGoingTo(distance, goingSpeed) {
@@ -20,6 +20,7 @@ class Points {
         if (station_or_point.hashcode != null) {
             if (station_or_point.point != null) return station_or_point.point;
             var newCreatdPoint = new Point(2160000000, station_or_point, null, null);
+            newCreatdPoint.heuristicTimeToFinalPoint = distance(newCreatdPoint.coords, this.finalPoint.coords) / 5;
             this.collection.push(newCreatdPoint);
             return newCreatdPoint;
         }
@@ -31,11 +32,13 @@ class Points {
         }
     }
     fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments) {
-        this.finalPoint.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed) + 1200/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null);
+        this.finalPoint.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed) + 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null);
+        const finalPointCoords = this.finalPoint.coords;
         for (var i = 0, n = stationsList.length, st = stationsList[0]; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
 
             var add = new Point(2160000000, st, null, null);
+            add.heuristicTimeToFinalPoint = distance(add.coords, finalPointCoords) / 5;
             add.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed) + reservedTime, this.startPoint, null, null);
             this.collection.push(add);
         }
@@ -52,9 +55,12 @@ class Points {
         for (var i = 0, n = this.collection.length, t = this.collection[0]; i < n; t = this.collection[++i]) {
             if (!(t.isVisited)) {
                 p = t;
+                //var euristicTimeSecondsToFinalPoint = distance(p.coords, this.finalPoint.coords) / 5; // Оценка оставшегося времени пути в секундах.
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    if (!(t.isVisited) && t.totalTimeSeconds < p.totalTimeSeconds) {
+                    //var tmpEuristic = distance(t.coords, this.finalPoint.coords) / 5;
+                    if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < p.totalTimeSeconds + p.heuristicTimeToFinalPoint ) {
                         p = t;
+                        //euristicTimeSecondsToFinalPoint = tmpEuristic;
                     }
                 }
                 return p;
@@ -169,9 +175,14 @@ class Points {
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
         var currentPoint = this.finalPoint.previousPoint;
         while (currentPoint !== this.startPoint) {
+            if(currentPoint == null){
+                console.log("err 1 in points.js");
+                console.log(this.finalPoint);
+            }
             var r = currentPoint.fromWhichRoute;
             if (r != null) {
                 var previousPoint = currentPoint.previousPoint;
+                //if(previousPoint == null) console.log("err 2 in points.js");
                 if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== r) // Если на предыдущую остановку мы добрались другим транспортом, то:
                 {
                     var previousRouteStation = r.getPreviousStation(previousPoint.station);

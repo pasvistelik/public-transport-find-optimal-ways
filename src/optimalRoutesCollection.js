@@ -3,12 +3,17 @@ import OptimalRoute from './optimalRoute';
 import OptimalWay from './optimalWay';
 import Points from './points';
 
-import GeoCoords from './../geo-coords-functions/geoCoords';
-var distance = GeoCoords.distance;
-function getStationsAround(allStations, coords, radius) {
+import distance from 'geo-coords-distance';
+
+const heuristicBestTransportSpeed = 40;
+
+function getStationsAround(allStations, nowPos, needPos, goingSpeed, heuristicBestTransportSpeed) {
     var result = [];
+    const fullDistance = distance(nowPos, needPos);
     for (var i = 0, n = allStations.length, s = allStations[0]; i < n; s = allStations[++i]) {
-        if (s != null && distance(s.coords, coords) < radius) result.push(s);
+        if (s != null && fullDistance > distance(nowPos, s.coords) + goingSpeed * distance(s.coords, needPos) / heuristicBestTransportSpeed) {
+            result.push(s);
+        }
     }
     return result;
 }
@@ -63,9 +68,9 @@ class OptimalRoutesCollection extends Array {
 
         var myPoints = new Points(nowPos, needPos);
         // Получим "начальный" список станций:
-        var stationsList = getStationsAround(allStations, myPoints.startPoint.coords, distance(myPoints.startPoint.coords, myPoints.finalPoint.coords));
+        var stationsList = getStationsAround(allStations, nowPos, needPos, speed, heuristicBestTransportSpeed);
 
-        this.push(new OptimalRoute(myPoints, stationsList, nowPos, needPos, time, types, speed, dopTimeMinutes));
+        this.push(new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes));
 
         var ignoringRoutes = [];
 
@@ -77,6 +82,7 @@ class OptimalRoutesCollection extends Array {
             ignoringRoutes = [];
             // Проходим по всем ребрам выбранного пути и строим новые маршруты при удалении ребер:
             for (var tmpP = selectedOptimalRoute.myPoints.finalPoint; tmpP.previousPoint != null; tmpP = tmpP.previousPoint) {
+                //if(tmpP == null) console.log("err in optimalRoutesCollection.js");
                 if (tmpP.fromWhichRoute != null && !ignoringRoutes.includes(tmpP.fromWhichRoute)) ignoringRoutes.push(tmpP.fromWhichRoute);
             }
             for (var i = 0, n = ignoringRoutes.length, r = ignoringRoutes[0]; i < n; r = ignoringRoutes[++i]) {
@@ -85,7 +91,7 @@ class OptimalRoutesCollection extends Array {
                 ignoringRoutesAdd = ignoringRoutesAdd.concat(selectedOptimalRoute.ignoringRoutes);
                 ignoringRoutesAdd.push(r);
                 myPoints = new Points(nowPos, needPos);
-                var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, nowPos, needPos, time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
+                var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
 
                 if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd) {
                     var tmpJSON = JSON.stringify(tmpOptimalRoute.points);
