@@ -8,5 +8,13 @@
       }
     }]
   ],
-  "plugins": ["transform-class-properties", "babel-polyfill"]
+  "plugins": [
+    "transform-class-properties", 
+    "babel-polyfill", 
+    "transform-regenerator",
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ]
 }
