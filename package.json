@@ -1,10 +1,10 @@
 {
   "name": "public-transport-find-optimal-ways",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Module for finding optimal ways on a public transport.",
   "main": "lib/optimalRoutesCollection.js",
   "scripts": {
-    "build": "npm update && babel src --out-dir lib",
+    "build": "babel src --out-dir lib",
     "preinstall": "npm run build",
     "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
