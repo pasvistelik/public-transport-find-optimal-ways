@@ -1,6 +1,6 @@
 {
   "name": "public-transport-find-optimal-ways",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Module for finding optimal ways on a public transport.",
   "main": "lib/optimalRoutesCollection.js",
   "scripts": {
@@ -30,6 +30,6 @@
     "babel-preset-stage-2":"^6.24.1",
     "babel-plugin-transform-regenerator":"^6.24.1",
     "babel-polyfill": "^6.23.0",
-    "geo-coords-distance": "^2.0.1"
+    "geo-coords-distance": "^2.0.5"
   }
 }
