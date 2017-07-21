@@ -109,7 +109,7 @@ class Points {
 
                                 // Резервируем дополнительное время, если будем пересаживаться на другой маршрут:
                                 //if (selectedPoint.RouteCode == null || selectedPoint.RouteCode != selectedRoute.hashcode) momentWhenAskingForGoing += reservedTime;
-                                if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;//!!!!!
+                                if (/*selectedPointFromWhichRoute != null && */selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;//!!!!!
 
                                 // Подсчитываем, сколько будем ожидать этот транспорт на остановке:
                                 var waitingTime = table.findTimeAfter(momentWhenAskingForGoing);
