@@ -1,6 +1,6 @@
 {
   "name": "public-transport-find-optimal-ways",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Module for finding optimal ways on a public transport.",
   "main": "lib/optimalRoutesCollection.js",
   "scripts": {
