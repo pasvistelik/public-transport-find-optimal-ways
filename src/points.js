@@ -85,24 +85,22 @@ class Points {
                 // Момент, когда мы прибудем на остановку:
                 momentWhenComingToStation = time + selectedPointTotalTimeSeconds;
                 // Загружаем маршруты, проходящие через остановку:
-                routesOnStation = null;// = routesOnStation = Database.GetRoutesOnStation(selectedPointStation.hashcode, canReadDataFromLocalCopy: true);
                 if (selectedPointStation.routes != null) routesOnStation = selectedPointStation.routes;
                 else continue;
 
+                // Просматриваем все маршруты, проходящие через остановку:
                 for (var i = 0, n = routesOnStation.length, selectedRoute = routesOnStation[0], nextStation; i < n; selectedRoute = routesOnStation[++i]) {
                     if (ignoringRoutes != null && ignoringRoutes.includes(selectedRoute)) continue;
                     if (types.includes(selectedRoute.type)) {
-                        // Следующая остановка у данного тран спорта:
+                        // Следующая остановка у данного транспорта:
                         nextStation = selectedRoute.getNextStation(selectedPointStation);
 
-                        /*// Код остановки, на которую попадем на данном транспорте:
-                        string nextCode = selectedRoute.getNextStationCodeAfter(selectedPointStation.hashcode, canReadDataFromLocalCopy: true);*/
-                        if (nextStation/*nextCode*/ != null) // Если остановка не является конечной, то:
+                        if (nextStation != null) // Если остановка не является конечной, то:
                         {
                             // Загружаем расписание:
-                            var table = selectedRoute.getTimetable(selectedPointStation);//Database.getTimetable(selectedPointStation.hashcode, selectedRoute.hashcode, databaseMysqlConnection, canReadDataFromLocalCopy: true);
+                            var table = selectedRoute.getTimetable(selectedPointStation);
                             // Блокируем попытку попасть указанным транспортом на указанную остановку:
-                            if (myIgnoringFragments!= null && myIgnoringFragments.contains(nextStation.hashcode/*nextCode*/, selectedRoute.hashcode, selectedPointStationHashcode)) continue;
+                            if (myIgnoringFragments!= null && myIgnoringFragments.contains(nextStation.hashcode, selectedRoute.hashcode, selectedPointStationHashcode)) continue;
 
                             if (table.type === TableType.table) // Если это точное расписание, то:
                             {
@@ -111,7 +109,7 @@ class Points {
 
                                 // Резервируем дополнительное время, если будем пересаживаться на другой маршрут:
                                 //if (selectedPoint.RouteCode == null || selectedPoint.RouteCode != selectedRoute.hashcode) momentWhenAskingForGoing += reservedTime;
-                                if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;
+                                if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;//!!!!!
 
                                 // Подсчитываем, сколько будем ожидать этот транспорт на остановке:
                                 var waitingTime = table.findTimeAfter(momentWhenAskingForGoing);
@@ -119,19 +117,16 @@ class Points {
                                 // Момент, когда мы сядем в транспорт:
                                 var momentWhenSitInTransport = momentWhenAskingForGoing + waitingTime;
 
-                                /*// Следующая остановка у данного транспорта:
-                                Station nextStation = Database.GetStationByHashcode(nextCode, databaseMysqlConnection, canReadDataFromLocalCopy: true);*/
-
-                                // И соответствующее расписание на этой остановке:
-                                var tbl = selectedRoute.getTimetable(nextStation);//Database.getTimetable(nextStation.hashcode, selectedRoute.hashcode, databaseMysqlConnection, canReadDataFromLocalCopy: true);
+                                // Расписание данного транспорта на следующей остановке:
+                                var tbl = selectedRoute.getTimetable(nextStation);
                                 
                                 // (сколько будем ехать до следующей остановки):
                                 var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport);
                                 
                                 // Метка времени:
-                                var onNextPointtotalTimeSeconds = momentWhenSitInTransport - momentWhenComingToStation + goingOnTransportTime + selectedPointTotalTimeSeconds;
+                                var onNextPointTotalTimeSeconds = momentWhenSitInTransport - momentWhenComingToStation + goingOnTransportTime + selectedPointTotalTimeSeconds;
                                 
-                                if (this.findElement(nextStation).tryUpdate(onNextPointtotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute)) {
+                                if (this.findElement(nextStation).tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute)) {
                                     //console.log("upd...");
                                 }
                             }
@@ -177,20 +172,19 @@ class Points {
         while (currentPoint !== this.startPoint) {
             if(currentPoint == null){
                 console.log("err 1 in points.js");
-                console.log(this.finalPoint);
             }
             var r = currentPoint.fromWhichRoute;
             if (r != null) {
                 var previousPoint = currentPoint.previousPoint;
-                //if(previousPoint == null) console.log("err 2 in points.js");
-                if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== r) // Если на предыдущую остановку мы добрались другим транспортом, то:
+                // Если на предыдущую остановку мы добрались другим транспортом, то:
+                if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== r) 
                 {
                     var previousRouteStation = r.getPreviousStation(previousPoint.station);
                     if (previousRouteStation != null) {
                         var point = previousRouteStation.point;
                         if (point != null && point.isVisited) {
-                            var ttt = r.getTimetable(previousRouteStation);
-                            if (ttt != null) {
+                            //var ttt = r.getTimetable(previousRouteStation);
+                            //if (ttt != null) {
                                 //var ddd = time + previousPoint.totalTimeSeconds;
                                 //var moment = r.getTimetable(currentPoint.station).findTimeAfter(ddd);
                                 //var tmp_time = ttt.findTimeBefore(ddd + moment);
@@ -208,7 +202,7 @@ class Points {
                                     previousPoint.fromWhichRoute = r;
                                     previousPoint.previousPoint = point;
                                 }
-                            }
+                            //}
                         }
                     }
                 }
