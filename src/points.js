@@ -99,6 +99,7 @@ class Points {
                         {
                             // Загружаем расписание:
                             var table = selectedRoute.getTimetable(selectedPointStation);
+                            if (table == null) continue;
                             // Блокируем попытку попасть указанным транспортом на указанную остановку:
                             if (myIgnoringFragments!= null && myIgnoringFragments.contains(nextStation.hashcode, selectedRoute.hashcode, selectedPointStationHashcode)) continue;
 
