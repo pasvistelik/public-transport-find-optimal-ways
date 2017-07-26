@@ -167,81 +167,61 @@ class Points {
                 //console.log("upd: " + selectedPointStation.hashcode);
             }
         }
-/*
+        
+        //console.log("\n\n\nTry optimize...");
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
-        var currentPoint = this.finalPoint.previousPoint;
-        //console.log("\n\n\n\ntry optimize...");
-        while (currentPoint !== this.startPoint) {
-            if(currentPoint == null){
-                console.log("err 1 in points.js");
-            }
-            //console.log("\n Iteration:");
-            var selectedRoute = currentPoint.fromWhichRoute; // r=selectedRoute // "r" is old variable
-            if (selectedRoute != null) {
-                var previousPoint = currentPoint.previousPoint;
-                // Если на предыдущую остановку мы добрались другим транспортом, то:
-                if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== selectedRoute) 
-                {
-                    //console.log(selectedRoute + "and" + previousPoint.fromWhichRoute);
-                    var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(previousPoint.station);
-                    if (previousStationOfSelectedRoute != null) {
-                        var point = previousStationOfSelectedRoute.point;
-                        //console.log(point);/////////////////////////////////////////////////////////////////////////
-                        //console.log(previousPoint);/////////////////////////////////////////////////////////////////////////
-                        //console.log(currentPoint);/////////////////////////////////////////////////////////////////////////
-                        if (point != null && point.isVisited) {
-                            //if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
-                                //previousPoint.fromWhichRoute = selectedRoute;
-                              //  previousPoint.previousPoint = point;
-                                //console.log("ok");
-                            //}
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = currentPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
+            
+            // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
+            if (selectedRoute == null || previousPoint === this.startPoint || previousPoint.fromWhichRoute === selectedRoute) continue;
+            
+            var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(previousPoint.station);
+            if (previousStationOfSelectedRoute == null) continue;
 
-                            // Загружаем расписание:
-                            var table = selectedRoute.getTimetable(point.station);
-                            if (table == null) continue;
+            var point = previousStationOfSelectedRoute.point;
+            if (point == null || !(point.isVisited)) continue;
 
-                            //var momentWhenComingToStation = time + point.totalTimeSeconds;
+            //if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
+                //previousPoint.fromWhichRoute = selectedRoute;
+                //  previousPoint.previousPoint = point;
+                //console.log("ok");
+            //}
 
-                            if (table.type === TableType.table) // Если это точное расписание, то:
-                            {
-                                var aaa = table.findTimeBefore(time + currentPoint.totalTimeSeconds);
-                                var bbb = aaa + currentPoint.totalTimeSeconds;
+            // Загружаем расписание:
+            var table = selectedRoute.getTimetable(point.station);
+            if (table == null) continue;
 
-                                // Момент отправки не может наступить раньше момента прибытия на эту остановку.
-                                if(bbb >= point.totalTimeSeconds + reservedTime) {  
-                                    previousPoint.previousPoint = point;
-                                    previousPoint.fromWhichRoute = selectedRoute;
-                                    previousPoint.fromWhichStation = point.station;
+            if (table.type === TableType.table) // Если это точное расписание, то:
+            {
+                var bbb = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds);
 
-                                    var tbl = selectedRoute.getTimetable(previousPoint.station);
-                                    var ccc = tbl.findTimeBefore(time + currentPoint.totalTimeSeconds);
-                                    var ddd = ccc + currentPoint.totalTimeSeconds;
-                                    previousPoint.totalTimeSeconds = ddd;
-                                    
-                                    //console.log("ok: " + currentPoint.totalTimeSeconds + " > " + ddd + " > " + bbb);
-                                    //console.log(this);
-                                }
-                            }
-                            else if (table.type === TableType.periodic) {
-                                throw new Error();
-                            }
+                // Момент отправки не может наступить раньше момента прибытия на эту остановку.
+                if(bbb >= point.totalTimeSeconds + reservedTime && point.getTotalGoingTime() <= previousPoint.getTotalGoingTime()) {  
 
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        }
-                    }
+                    //console.log("Добавили станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'");
+
+                    previousPoint.previousPoint = point;
+                    previousPoint.fromWhichRoute = selectedRoute;
+                    previousPoint.fromWhichStation = point.station;
+
+                    /*var tbl = selectedRoute.getTimetable(previousPoint.station);
+                    var ccc = tbl.findTimeBefore(time + currentPoint.totalTimeSeconds);
+                    var ddd = ccc + currentPoint.totalTimeSeconds;*/
+                    var ddd = bbb + table.findTimeAfter(time + bbb);
+                    previousPoint.totalTimeSeconds = ddd;
+                    
+                    //console.log("ok: " + currentPoint.totalTimeSeconds + " > " + ddd + " > " + bbb);
+                    //console.log(this);
                 }
+                //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + bbb + " < " + (point.totalTimeSeconds + reservedTime) + " )");
             }
-            currentPoint = currentPoint.previousPoint;
-        }*/
+            else /*if (table.type === TableType.periodic)*/ {
+                throw new Error();
+            }
+            
+        }
+
+
     }
 
 
