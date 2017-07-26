@@ -170,40 +170,72 @@ class Points {
 
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
         var currentPoint = this.finalPoint.previousPoint;
+        //console.log("\n\n\n\ntry optimize...");
         while (currentPoint !== this.startPoint) {
             if(currentPoint == null){
                 console.log("err 1 in points.js");
             }
-            var r = currentPoint.fromWhichRoute;
-            if (r != null) {
+            //console.log("\n Iteration:");
+            var selectedRoute = currentPoint.fromWhichRoute; // r=selectedRoute // "r" is old variable
+            if (selectedRoute != null) {
                 var previousPoint = currentPoint.previousPoint;
                 // Если на предыдущую остановку мы добрались другим транспортом, то:
-                if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== r) 
+                if (previousPoint !== this.startPoint && previousPoint.fromWhichRoute !== selectedRoute) 
                 {
-                    var previousRouteStation = r.getPreviousStation(previousPoint.station);
-                    if (previousRouteStation != null) {
-                        var point = previousRouteStation.point;
+                    //console.log(selectedRoute + "and" + previousPoint.fromWhichRoute);
+                    var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(previousPoint.station);
+                    if (previousStationOfSelectedRoute != null) {
+                        var point = previousStationOfSelectedRoute.point;
+                        //console.log(point);/////////////////////////////////////////////////////////////////////////
+                        //console.log(previousPoint);/////////////////////////////////////////////////////////////////////////
+                        //console.log(currentPoint);/////////////////////////////////////////////////////////////////////////
                         if (point != null && point.isVisited) {
-                            //var ttt = r.getTimetable(previousRouteStation);
-                            //if (ttt != null) {
-                                //var ddd = time + previousPoint.totalTimeSeconds;
-                                //var moment = r.getTimetable(currentPoint.station).findTimeAfter(ddd);
-                                //var tmp_time = ttt.findTimeBefore(ddd + moment);
+                            /*if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
+                                previousPoint.fromWhichRoute = selectedRoute;
+                                previousPoint.previousPoint = point;
+                                //console.log("ok");
+                            }*/
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                                //var momentArriveOnCurrent = previousPoint.totalTimeSeconds + moment;
-                                //var momentSittingOnPrevious = momentArriveOnCurrent + tmp_time;
-                                /*bool bbb = point.fromWhichRoute != null && point.fromWhichRoute.getTimetable(point.station) != null && point.fromWhichRoute.getTimetable(point.station).findTimeAfter(time + point.totalTimeSeconds) <= previousPoint.totalTimeSeconds + moment + tmp_time;
-                                if (bbb)
-                                {
-                                    previousPoint.fromWhichRoute = r;
-                                    previousPoint.previousPoint = point;////!bbb && point.totalTimeSeconds <= momentSittingOnPrevious &&
-                                }
-                                else */
-                                if (/*point.totalGoingTime>=previousPoint.totalGoingTime || */point.totalTimeSeconds <= previousPoint.totalTimeSeconds/* && point.totalGoingTime <= previousPoint.totalGoingTime*/) {
-                                    previousPoint.fromWhichRoute = r;
+                            // Загружаем расписание:
+                            var table = selectedRoute.getTimetable(point.station);
+                            if (table == null) continue;
+
+                            //var momentWhenComingToStation = time + point.totalTimeSeconds;
+
+                            if (table.type === TableType.table) // Если это точное расписание, то:
+                            {
+                                var aaa = table.findTimeBefore(time + currentPoint.totalTimeSeconds);
+                                var bbb = aaa + currentPoint.totalTimeSeconds;
+
+                                // Момент отправки не может наступить раньше момента прибытия на эту остановку.
+                                if(bbb >= point.totalTimeSeconds + reservedTime) {  
                                     previousPoint.previousPoint = point;
+                                    previousPoint.fromWhichRoute = selectedRoute;
+                                    previousPoint.fromWhichStation = point.station;
+
+                                    var tbl = selectedRoute.getTimetable(previousPoint.station);
+                                    var ccc = tbl.findTimeBefore(time + currentPoint.totalTimeSeconds);
+                                    var ddd = ccc + currentPoint.totalTimeSeconds;
+                                    previousPoint.totalTimeSeconds = ddd;
+                                    
+                                    //console.log("ok: " + currentPoint.totalTimeSeconds + " > " + ddd + " > " + bbb);
+                                    //console.log(this);
                                 }
-                            //}
+                            }
+                            else if (table.type === TableType.periodic) {
+                                throw new Error();
+                            }
+
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         }
                     }
                 }
