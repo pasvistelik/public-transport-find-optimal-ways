@@ -167,7 +167,7 @@ class Points {
                 //console.log("upd: " + selectedPointStation.hashcode);
             }
         }
-
+/*
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
         var currentPoint = this.finalPoint.previousPoint;
         //console.log("\n\n\n\ntry optimize...");
@@ -190,11 +190,11 @@ class Points {
                         //console.log(previousPoint);/////////////////////////////////////////////////////////////////////////
                         //console.log(currentPoint);/////////////////////////////////////////////////////////////////////////
                         if (point != null && point.isVisited) {
-                            /*if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
-                                previousPoint.fromWhichRoute = selectedRoute;
-                                previousPoint.previousPoint = point;
+                            //if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
+                                //previousPoint.fromWhichRoute = selectedRoute;
+                              //  previousPoint.previousPoint = point;
                                 //console.log("ok");
-                            }*/
+                            //}
                             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@ class Points {
                 }
             }
             currentPoint = currentPoint.previousPoint;
-        }
+        }*/
     }
 
 
