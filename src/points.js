@@ -55,12 +55,9 @@ class Points {
         for (var i = 0, n = this.collection.length, t = this.collection[0]; i < n; t = this.collection[++i]) {
             if (!(t.isVisited)) {
                 p = t;
-                //var euristicTimeSecondsToFinalPoint = distance(p.coords, this.finalPoint.coords) / 5; // Оценка оставшегося времени пути в секундах.
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    //var tmpEuristic = distance(t.coords, this.finalPoint.coords) / 5;
                     if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < p.totalTimeSeconds + p.heuristicTimeToFinalPoint ) {
                         p = t;
-                        //euristicTimeSecondsToFinalPoint = tmpEuristic;
                     }
                 }
                 return p;
@@ -69,12 +66,12 @@ class Points {
         return null;
     }
     countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
-        //TimeSpan overLimitResedvedTime = TimeSpan.FromMinutes(20);
+        const overLimitResedvedTime = 1200;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             selectedPointTotalTimeSeconds = selectedPoint.totalTimeSeconds;
-            if (selectedPointTotalTimeSeconds + selectedPoint.heuristicTimeToFinalPoint > this.finalPoint.totalTimeSeconds/* + overLimitResedvedTime*/) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
+            if (selectedPointTotalTimeSeconds + selectedPoint.heuristicTimeToFinalPoint > this.finalPoint.totalTimeSeconds + overLimitResedvedTime) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
             {
                 break;
             }
@@ -181,41 +178,28 @@ class Points {
             var point = previousStationOfSelectedRoute.point;
             if (point == null || !(point.isVisited)) continue;
 
-            //if(point.totalTimeSeconds <= previousPoint.totalTimeSeconds) {  
-                //previousPoint.fromWhichRoute = selectedRoute;
-                //  previousPoint.previousPoint = point;
-                //console.log("ok");
-            //}
-
             // Загружаем расписание:
             var table = selectedRoute.getTimetable(point.station);
             if (table == null) continue;
 
             if (table.type === TableType.table) // Если это точное расписание, то:
             {
-                var bbb = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds);
+                // Момент отправки.
+                var momentOfDispatchFromPoint = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds);
 
                 // Момент отправки не может наступить раньше момента прибытия на эту остановку.
-                if(bbb >= point.totalTimeSeconds + reservedTime && point.getTotalGoingTime() <= previousPoint.getTotalGoingTime()) {  
+                if(momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime && point.getTotalGoingTime() <= previousPoint.getTotalGoingTime()) {  
 
                     //console.log("Добавили станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'");
 
                     previousPoint.previousPoint = point;
                     previousPoint.fromWhichRoute = selectedRoute;
                     previousPoint.fromWhichStation = point.station;
-
-                    /*var tbl = selectedRoute.getTimetable(previousPoint.station);
-                    var ccc = tbl.findTimeBefore(time + currentPoint.totalTimeSeconds);
-                    var ddd = ccc + currentPoint.totalTimeSeconds;*/
-                    var ddd = bbb + table.findTimeAfter(time + bbb);
-                    previousPoint.totalTimeSeconds = ddd;
-                    
-                    //console.log("ok: " + currentPoint.totalTimeSeconds + " > " + ddd + " > " + bbb);
-                    //console.log(this);
+                    previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + table.findTimeAfter(time + momentOfDispatchFromPoint);
                 }
-                //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + bbb + " < " + (point.totalTimeSeconds + reservedTime) + " )");
+                //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");
             }
-            else /*if (table.type === TableType.periodic)*/ {
+            else  { //if (table.type === TableType.periodic)
                 throw new Error();
             }
             
