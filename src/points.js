@@ -167,6 +167,7 @@ class Points {
     optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
         var tmp = [];
         //console.log("\n\n\nTry optimize...");
+        if(this.finalPoint.previousPoint == null) return;
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
         for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = currentPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
             
