@@ -25,14 +25,15 @@ class Points {
             return newCreatdPoint;
         }
         else {
+            console.log("test 0");
             for (var i = 0, n = this.collection.length, p = this.collection[0]; i < n; p = this.collection[++i]) {
                 if (p.coords === station_or_point.coords && p.stationCode === station_or_point.stationCode) return p;
             }
             return null;
         }
     }
-    fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments) {
-        this.finalPoint.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed) + 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null);
+    fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments, ignoringRoutes) {
+        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed) /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null);
         const finalPointCoords = this.finalPoint.coords;
         for (var i = 0, n = stationsList.length, st = stationsList[0]; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
@@ -65,8 +66,8 @@ class Points {
         }
         return null;
     }
-    countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
-        const overLimitResedvedTime = 1200;
+    countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+        const overLimitResedvedTime = 2400;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -87,7 +88,7 @@ class Points {
 
                 // Просматриваем все маршруты, проходящие через остановку:
                 for (var i = 0, n = routesOnStation.length, selectedRoute = routesOnStation[0], nextStation; i < n; selectedRoute = routesOnStation[++i]) {
-                    if (ignoringRoutes != null && ignoringRoutes.includes(selectedRoute)) continue;
+                    if (ignoringRoutes != null && selectedRoute != null && ignoringRoutes.includes(selectedRoute)) continue;
                     if (types.includes(selectedRoute.type)) {
                         // Следующая остановка у данного транспорта:
                         nextStation = selectedRoute.getNextStation(selectedPointStation);
@@ -140,14 +141,12 @@ class Points {
             if (selectedPointFromWhichRoute == null) continue;
 
             // Попробуем пройти пешком до других "вершин":
-            for (var j = 0, m = this.collection.length, p = this.collection[0], distanceToSelectedPoint, goingTime, newTime; j < m; p = this.collection[++j])
+            for (var j = 0, m = this.collection.length, p = this.collection[0], goingTime, newTime; j < m; p = this.collection[++j])
                 if (!p.isVisited && p !== selectedPoint) {
                     // Блокируем попытку дойти пешком до указанной остановки:
                     if (myIgnoringFragments != null && myIgnoringFragments.contains(p.stationCode, null, selectedPointStationHashcode)) continue;
-
-                    distanceToSelectedPoint = distance(selectedPointCoords, p.coords);
                     
-                    goingTime = getTimeForGoingTo(distanceToSelectedPoint, speed/*, true, sp*/);
+                    goingTime = getTimeForGoingTo(distance(selectedPointCoords, p.coords), speed);
 
                     newTime = selectedPointTotalTimeSeconds + goingTime + reservedTime;
                     /*if (p != myFinishPoint)*/ // newTime += reservedTime;
@@ -164,7 +163,9 @@ class Points {
                 //console.log("upd: " + selectedPointStation.hashcode);
             }
         }
-        
+    }
+    optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+        var tmp = [];
         //console.log("\n\n\nTry optimize...");
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
         for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = currentPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
@@ -188,14 +189,30 @@ class Points {
                 var momentOfDispatchFromPoint = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds);
 
                 // Момент отправки не может наступить раньше момента прибытия на эту остановку.
-                if(momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime && point.getTotalGoingTime() <= previousPoint.getTotalGoingTime()) {  
+                if (momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime) {  
 
-                    //console.log("Добавили станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'");
+                    var p1 = point.getTotalGoingTime();
+                    var p2 = previousPoint.getTotalGoingTime();
+                    tmp.push({
+                        /*point: previousPoint,
+                        oldPrevious: previousPoint.previousPoint,
+                        newPrevious: point,*/
+                        route: selectedRoute.number + " " + selectedRoute.type,
+                        p1: p1,
+                        p2: p2,
+                        s: point.station.name
+                    });
+                    if (p1 <= p2) {
+                        
+                    //}
 
-                    previousPoint.previousPoint = point;
-                    previousPoint.fromWhichRoute = selectedRoute;
-                    previousPoint.fromWhichStation = point.station;
-                    previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + table.findTimeAfter(time + momentOfDispatchFromPoint);
+                        //console.log("Добавили станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'");
+
+                        previousPoint.previousPoint = point;
+                        previousPoint.fromWhichRoute = selectedRoute;
+                        previousPoint.fromWhichStation = point.station;
+                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + table.findTimeAfter(time + momentOfDispatchFromPoint);
+                    }
                 }
                 //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");
             }
@@ -204,11 +221,19 @@ class Points {
             }
             
         }
-
-
+        //console.log(tmp);
     }
+    countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+        //try {
 
+        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
+        this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
 
+        //}
+        //catch(e) {
+        //     console.log(e);
+        //}
+    }
 }
 
 export default Points;

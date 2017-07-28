@@ -22,7 +22,7 @@ class OptimalRoute {
 
         //var myPoints = new Points(nowPos, needPos);
         
-        myPoints.fillStartData(stationsList, goingSpeed, reservedTimeSeconds, this.myIgnoringFragments);
+        myPoints.fillStartData(stationsList, goingSpeed, reservedTimeSeconds, this.myIgnoringFragments, this.ignoringRoutes);
 
         // Находим кратчайшие пути до всех вершин:
         myPoints.countShortWay(this.ignoringRoutes, this.myIgnoringFragments, time, types, goingSpeed, reservedTimeSeconds);

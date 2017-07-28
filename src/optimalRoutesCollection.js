@@ -43,7 +43,7 @@ class OptimalRoutesCollection extends Array {
     }*/
     constructor(allStations, nowPos, needPos, time, types, speed, dopTimeMinutes) {
         super();
-        console.log("TEST_111111111111111111111111111111111111111111111111111111111111111");/////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!
+        //console.log("TEST_111111111111111111111111111111111111111111111111111111111111111");/////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!
         this.getOptimalWays = function() {
             var result = [];
             for (var i = 0, n = this.length, r = this[0]; i < n; r = this[++i]) {
@@ -84,7 +84,7 @@ class OptimalRoutesCollection extends Array {
             // Проходим по всем ребрам выбранного пути и строим новые маршруты при удалении ребер:
             for (var tmpP = selectedOptimalRoute.myPoints.finalPoint; tmpP.previousPoint != null; tmpP = tmpP.previousPoint) {
                 //if(tmpP == null) console.log("err in optimalRoutesCollection.js");
-                if (tmpP.fromWhichRoute != null && !ignoringRoutes.includes(tmpP.fromWhichRoute)) ignoringRoutes.push(tmpP.fromWhichRoute);
+                if (/*tmpP.fromWhichRoute != null &&*/ !ignoringRoutes.includes(tmpP.fromWhichRoute)) ignoringRoutes.push(tmpP.fromWhichRoute);
             }
             for (var i = 0, n = ignoringRoutes.length, r = ignoringRoutes[0]; i < n; r = ignoringRoutes[++i]) {
                 if (selectedOptimalRoute.ignoringRoutes.includes(r)) continue;
@@ -95,10 +95,11 @@ class OptimalRoutesCollection extends Array {
                 var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
 
                 if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd) {
-                    var tmpJSON = JSON.stringify(tmpOptimalRoute.points);
+                    tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
                     var ok = false;
                     for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
-                        if (JSON.stringify(opt.points) === tmpJSON) {
+                        if (opt.hash == null) opt.hash = JSON.stringify(opt.points);
+                        if (opt.hash === tmpOptimalRoute.hash) {
                             ok = true;
                             break;
                         }
