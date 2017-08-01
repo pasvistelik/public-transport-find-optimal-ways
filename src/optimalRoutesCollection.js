@@ -114,7 +114,7 @@ class OptimalRoutesCollection extends Array {
                 }
             }
         }
-        Console.log("All: "+ tmpAllCount + ", real: " + tmpRealCount);
+        console.log("All: "+ tmpAllCount + ", real: " + tmpRealCount);
     }
 }
 
