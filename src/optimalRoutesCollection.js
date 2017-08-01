@@ -77,6 +77,8 @@ class OptimalRoutesCollection extends Array {
 
         //var ignoringFragments = new IgnoringFragments();
         
+        var tmpAllCount = 1, tmpRealCount = 1;
+
         for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark()) {
             var ddd = 0.25;
 
@@ -93,6 +95,8 @@ class OptimalRoutesCollection extends Array {
                 ignoringRoutesAdd.push(r);
                 myPoints = new Points(nowPos, needPos);
                 var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
+                
+                tmpAllCount++;
 
                 if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd) {
                     tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
@@ -106,9 +110,11 @@ class OptimalRoutesCollection extends Array {
                     }
                     if (ok) continue;
                     this.push(tmpOptimalRoute);
+                    tmpRealCount++;
                 }
             }
         }
+        Console.log("All: "+ tmpAllCount + ", real: " + tmpRealCount);
     }
 }
 
