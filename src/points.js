@@ -61,7 +61,7 @@ class Points {
             if (!(t.isVisited)) {
                 p = t;
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    if (!(t.isVisited) && t.totalTimeSeconds /*+ t.heuristicTimeToFinalPoint*/ < p.totalTimeSeconds /*+ p.heuristicTimeToFinalPoint*/ ) {
+                    if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < p.totalTimeSeconds + p.heuristicTimeToFinalPoint ) {
                         p = t;
                     }
                 }
