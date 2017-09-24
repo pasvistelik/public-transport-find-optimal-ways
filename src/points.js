@@ -61,7 +61,7 @@ class Points {
             if (!(t.isVisited)) {
                 p = t;
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < p.totalTimeSeconds + p.heuristicTimeToFinalPoint ) {
+                    if (!(t.isVisited) && t.totalTimeSeconds /*+ t.heuristicTimeToFinalPoint*/ < p.totalTimeSeconds /*+ p.heuristicTimeToFinalPoint*/ ) {
                         p = t;
                     }
                 }
@@ -76,7 +76,7 @@ class Points {
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             selectedPointTotalTimeSeconds = selectedPoint.totalTimeSeconds;
-            if (selectedPointTotalTimeSeconds/* + selectedPoint.heuristicTimeToFinalPoint*/ > this.finalPoint.totalTimeSeconds /*+ overLimitResedvedTime*/) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
+            if (selectedPointTotalTimeSeconds + selectedPoint.heuristicTimeToFinalPoint > this.finalPoint.totalTimeSeconds + overLimitResedvedTime) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
             {
                 break;
             }
@@ -232,7 +232,7 @@ class Points {
         //try {
 
         this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
-        //this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
+        this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
 
         //}
         //catch(e) {
