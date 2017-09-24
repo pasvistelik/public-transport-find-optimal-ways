@@ -7,6 +7,10 @@ function getTimeForGoingTo(distance, goingSpeed) {
     return Math.floor(distance / (goingSpeed / 3.6));
 }
 
+function getHeuristicTime(a_coords, b_coords) {
+    return distance(a_coords, b_coords) / 5;
+}
+
 const TableType = { table: 1, periodic: 2 };
 
 class Points {
@@ -20,7 +24,7 @@ class Points {
         if (station_or_point.hashcode != null) {
             if (station_or_point.point != null) return station_or_point.point;
             var newCreatdPoint = new Point(2160000000, station_or_point, null, null);
-            newCreatdPoint.heuristicTimeToFinalPoint = distance(newCreatdPoint.coords, this.finalPoint.coords) / 5;
+            newCreatdPoint.heuristicTimeToFinalPoint = distance(newCreatdPoint.coords, this.finalPoint.coords) / 5;//!!!
             this.collection.push(newCreatdPoint);
             return newCreatdPoint;
         }
@@ -67,7 +71,7 @@ class Points {
         return null;
     }
     countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
-        const overLimitResedvedTime = 2400;
+        const overLimitResedvedTime = 1200;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
