@@ -173,12 +173,12 @@ class Points {
         //console.log("\n\n\nTry optimize...");
         if(this.finalPoint.previousPoint == null) return;
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
-        for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
+        for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = currentPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
             
             // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
             if (selectedRoute == null || previousPoint === this.startPoint || previousPoint.fromWhichRoute === selectedRoute) continue;
             
-            var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(currentPoint.station);//!!! previousPoint
+            var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(previousPoint.station);//!!! previousPoint
             if (previousStationOfSelectedRoute == null) continue;
 
             var point = previousStationOfSelectedRoute.point;
@@ -197,7 +197,7 @@ class Points {
                 if (momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime) {  
 
                     var p1 = point.getTotalGoingTime();
-                    var p2 = previousPoint.getTotalGoingTime();
+                    var p2 = previousPoint.getTotalGoingTime();//!!! previousPoint
                     tmp.push({
                         /*point: previousPoint,
                         oldPrevious: previousPoint.previousPoint,
@@ -216,7 +216,7 @@ class Points {
                         previousPoint.previousPoint = point;
                         previousPoint.fromWhichRoute = selectedRoute;
                         previousPoint.fromWhichStation = point.station;
-                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + table.findTimeAfter(time + momentOfDispatchFromPoint);
+                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint);
                     }
                 }
                 //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");
