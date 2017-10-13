@@ -71,7 +71,7 @@ class Points {
         }
         return null;
     }
-    countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+    countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime) {
         const overLimitResedvedTime = 1200;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
@@ -116,7 +116,7 @@ class Points {
                                 if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;//!!!!!
 
                                 // Подсчитываем, сколько будем ожидать этот транспорт на остановке:
-                                var waitingTime = table.findTimeAfter(momentWhenAskingForGoing);
+                                var waitingTime = table.findTimeAfter(momentWhenAskingForGoing, day);
 
                                 // Момент, когда мы сядем в транспорт:
                                 var momentWhenSitInTransport = momentWhenAskingForGoing + waitingTime;
@@ -125,7 +125,7 @@ class Points {
                                 var tbl = selectedRoute.getTimetable(nextStation);
                                 
                                 // (сколько будем ехать до следующей остановки):
-                                var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport);
+                                var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
                                 
                                 // Метка времени:
                                 var onNextPointTotalTimeSeconds = momentWhenSitInTransport - momentWhenComingToStation + goingOnTransportTime + selectedPointTotalTimeSeconds;
@@ -169,7 +169,7 @@ class Points {
             }
         }
     }
-    optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+    optimizeFindedWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime) {
         var tmp = [];
         //console.log("\n\n\nTry optimize...");
         if(this.finalPoint.previousPoint == null) return;
@@ -192,7 +192,7 @@ class Points {
             if (table.type === TableType.table) // Если это точное расписание, то:
             {
                 // Момент отправки.
-                var momentOfDispatchFromPoint = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds);
+                var momentOfDispatchFromPoint = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds, day);
 
                 // Момент отправки не может наступить раньше момента прибытия на эту остановку.
                 if (momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime) {  
@@ -217,7 +217,7 @@ class Points {
                         previousPoint.previousPoint = point;
                         previousPoint.fromWhichRoute = selectedRoute;
                         previousPoint.fromWhichStation = point.station;
-                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint);
+                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint, day);
                     }
                 }
                 //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");
@@ -232,8 +232,10 @@ class Points {
     countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
         //try {
 
-        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
-        this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime);
+        var day = (new Date()).getDay();
+
+        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
+        this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
 
         //}
         //catch(e) {
