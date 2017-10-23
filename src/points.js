@@ -227,8 +227,11 @@ class Points {
                         previousPoint.fromWhichRoute = selectedRoute;
                         previousPoint.fromWhichStation = point.station;
                         previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint, day);
+                        
                         previousPoint.arrivalTime = previousPoint.totalTimeSeconds;//!!!!!!!!!!!!!
+                        point.changedDispatchTime = "from "+point.dispatchTime+" to "+momentOfDispatchFromPoint;
                         point.dispatchTime = momentOfDispatchFromPoint;//!!!!!!!!!!!!!!
+                        
 
                     }
                 }
