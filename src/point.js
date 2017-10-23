@@ -70,6 +70,26 @@
         }
         return result;
     }
+    getTotalWaitingTime() {
+        var result = 0;
+        var tmpP = this.previousPoint;
+        while (tmpP.previousPoint != null) {
+            result += tmpP.dispatchTime - tmpP.arrivalTime;
+            tmpP = tmpP.previousPoint;
+        }
+        return result;
+    }
+    getMinimalWaitingTime() {
+        var tmpP = this.previousPoint;
+        var result = tmpP.dispatchTime - tmpP.arrivalTime;
+        tmpP = tmpP.previousPoint;
+        while (tmpP.previousPoint != null) {
+            var temp = tmpP.dispatchTime - tmpP.arrivalTime;
+            if(temp < result) result = temp;
+            tmpP = tmpP.previousPoint;
+        }
+        return result;
+    }
 }
 
 export default Point;

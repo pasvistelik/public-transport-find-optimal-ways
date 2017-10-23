@@ -39,6 +39,9 @@ class OptimalRoute {
         this.totalTimeSeconds = myPoints.finalPoint.totalTimeSeconds;
         this.totalGoingTime = myPoints.finalPoint.getTotalGoingTime();
         this.totalTransportChangingCount = myPoints.finalPoint.getTotalTransportChangingCount();
+        
+        this.totalWaitingTime = myPoints.finalPoint.getTotalWaitingTime();
+        this.minimalWaitingTime = myPoints.finalPoint.getMinimalWaitingTime();
 
         this.myPoints = myPoints;
 

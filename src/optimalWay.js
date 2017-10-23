@@ -5,6 +5,8 @@ class OptimalWay {
         this.totalTimeSeconds = optimalRoute.totalTimeSeconds;
         this.totalGoingTimeSeconds = optimalRoute.totalGoingTime;
         this.totalTransportChangingCount = optimalRoute.totalTransportChangingCount;
+        this.totalWaitingTime = optimalRoute.totalWaitingTime;
+        this.minimalWaitingTime = optimalRoute.minimalWaitingTime;
         //this.minimalWaitingTime = 0;
         this.points = [];
 
