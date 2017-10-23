@@ -79,6 +79,7 @@ class OptimalRoutesCollection extends Array {
         
         var tmpAllCount = 1, tmpRealCount = 1;
 
+        //TODO: use solutions tree
         for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark()) {
             var ddd = 0.85;
 

@@ -37,14 +37,16 @@ class Points {
         }
     }
     fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments, ignoringRoutes) {
-        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed) /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null);
+        var tmpTime = getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed);
+        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(tmpTime /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null, tmpTime, null);
         const finalPointCoords = this.finalPoint.coords;
-        for (var i = 0, n = stationsList.length, st = stationsList[0]; i < n; st = stationsList[++i]) {
+        for (var i = 0, n = stationsList.length, st = stationsList[0], add, goingTime; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
 
-            var add = new Point(2160000000, st, null, null);
+            add = new Point(2160000000, st, null, null);
             add.heuristicTimeToFinalPoint = distance(add.coords, finalPointCoords) / 5;
-            add.tryUpdate(getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed) + reservedTime, this.startPoint, null, null);
+            goingTime = getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed);
+            add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, null);
             this.collection.push(add);
         }
     }
@@ -55,6 +57,7 @@ class Points {
 
         return this.currentSelectedPoint;
     }
+    // TODO: Определять следующую вершину можно прямо на каждом шаге алгоритма при вызове tryUpdate, не придется повторно просматривать список.
     selectPointWithMinimalMark() {
         for (var i = 0, n = this.collection.length, t = this.collection[0], p = null, currentMarkValue; i < n; t = this.collection[++i]) {
             if (!(t.isVisited)) {
@@ -128,9 +131,12 @@ class Points {
                                 var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
                                 
                                 // Метка времени:
-                                var onNextPointTotalTimeSeconds = momentWhenSitInTransport - momentWhenComingToStation + goingOnTransportTime + selectedPointTotalTimeSeconds;
+                                var dispatchTime = momentWhenSitInTransport - momentWhenComingToStation;
+                                var arrivalTime = dispatchTime + goingOnTransportTime;
+                                var onNextPointTotalTimeSeconds = arrivalTime + selectedPointTotalTimeSeconds;
                                 
-                                if (this.findElement(nextStation).tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute)) {
+                                if (this.findElement(nextStation).tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, null)) {
+                                    selectedPoint.dispatchTime = momentWhenSitInTransport - momentWhenComingToStation;
                                     //console.log("upd...");
                                 }
                             }
@@ -153,10 +159,12 @@ class Points {
                     
                     goingTime = getTimeForGoingTo(distance(selectedPointCoords, p.coords), speed);
 
-                    newTime = selectedPointTotalTimeSeconds + goingTime + reservedTime;
+                    var arrivalTime = selectedPointTotalTimeSeconds + goingTime;
+                    newTime = arrivalTime + reservedTime;
                     /*if (p != myFinishPoint)*/ // newTime += reservedTime;
                     
-                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null)) {
+                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, null)) {
+                        selectedPoint.dispatchTime = selectedPointTotalTimeSeconds;
                         //console.log("upd...");
                     }
                 }
@@ -164,8 +172,9 @@ class Points {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(null, null, selectedPointStationHashcode)) continue;
             
             var tryingNewTime = selectedPointTotalTimeSeconds + getTimeForGoingTo(distance(selectedPointCoords, this.finalPoint.coords), speed);
-            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null)) {
+            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, null)) {
                 //console.log("upd: " + selectedPointStation.hashcode);
+                selectedPoint.dispatchTime = selectedPointTotalTimeSeconds;
             }
         }
     }
@@ -218,6 +227,9 @@ class Points {
                         previousPoint.fromWhichRoute = selectedRoute;
                         previousPoint.fromWhichStation = point.station;
                         previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint, day);
+                        previousPoint.arrivalTime = previousPoint.totalTimeSeconds;//!!!!!!!!!!!!!
+                        point.dispatchTime = momentOfDispatchFromPoint;//!!!!!!!!!!!!!!
+
                     }
                 }
                 //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");

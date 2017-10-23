@@ -18,13 +18,18 @@
         this.isVisited = false;
 
         this.previousPoint = null;
+
+        this.arrivalTime = null;
+        this.dispatchTime = null;
     }
-    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute) {
+    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime) {
         if (totalTimeSeconds < this.totalTimeSeconds) {
             this.fromWhichRoute = fromWhichRoute;
             this.previousPoint = previousPoint;
             this.totalTimeSeconds = totalTimeSeconds;
             this.fromWhichStation = fromWhichStation;
+            this.arrivalTime = arrivalTime;
+            this.dispatchTime = dispatchTime;
 
             return true;
         }
