@@ -83,6 +83,7 @@
         var tmpP = this.previousPoint;
         var result = tmpP.dispatchTime - tmpP.arrivalTime;
         tmpP = tmpP.previousPoint;
+        if(tmpP == null) return result;
         while (tmpP.previousPoint != null) {
             var temp = tmpP.dispatchTime - tmpP.arrivalTime;
             if(temp < result) result = temp;
