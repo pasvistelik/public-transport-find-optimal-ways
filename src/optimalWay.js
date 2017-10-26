@@ -6,7 +6,9 @@ class OptimalWay {
         this.totalGoingTimeSeconds = optimalRoute.totalGoingTime;
         this.totalTransportChangingCount = optimalRoute.totalTransportChangingCount;
         this.totalWaitingTime = optimalRoute.totalWaitingTime;
-        this.minimalWaitingTime = optimalRoute.minimalWaitingTime;
+        //this.minimalWaitingTime = optimalRoute.minimalWaitingTime;
+
+        this.riskEffectivity = optimalRoute.riskEffectivity;
         //this.minimalWaitingTime = 0;
         this.points = [];
 

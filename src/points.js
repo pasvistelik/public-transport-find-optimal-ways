@@ -38,7 +38,7 @@ class Points {
     }
     fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments, ignoringRoutes) {
         var tmpTime = getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed);
-        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(tmpTime /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null, tmpTime, null);
+        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(tmpTime /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null, tmpTime, 2160000000, 0);
         const finalPointCoords = this.finalPoint.coords;
         for (var i = 0, n = stationsList.length, st = stationsList[0], add, goingTime; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
@@ -46,7 +46,7 @@ class Points {
             add = new Point(2160000000, st, null, null);
             add.heuristicTimeToFinalPoint = distance(add.coords, finalPointCoords) / 5;
             goingTime = getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed);
-            add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, null);
+            add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, 2160000000, 0);
             this.collection.push(add);
         }
     }
@@ -75,6 +75,7 @@ class Points {
         return null;
     }
     countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime) {
+
         const overLimitResedvedTime = 1200;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
@@ -116,7 +117,9 @@ class Points {
 
                                 // Резервируем дополнительное время, если будем пересаживаться на другой маршрут:
                                 //if (selectedPoint.RouteCode == null || selectedPoint.RouteCode != selectedRoute.hashcode) momentWhenAskingForGoing += reservedTime;
-                                if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) momentWhenAskingForGoing += reservedTime;//!!!!!
+                                if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) {
+                                    momentWhenAskingForGoing += reservedTime;
+                                }
 
                                 // Подсчитываем, сколько будем ожидать этот транспорт на остановке:
                                 var waitingTime = table.findTimeAfter(momentWhenAskingForGoing, day);
@@ -131,13 +134,44 @@ class Points {
                                 var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
                                 
                                 // Метка времени:
+                                //var dispatchTime = momentWhenSitInTransport - time;//momentWhenComingToStation + selectedPointTotalTimeSeconds;
+                                //var arrivalTime = dispatchTime + goingOnTransportTime;
+                                //var onNextPointTotalTimeSeconds = arrivalTime;
+
                                 var dispatchTime = momentWhenSitInTransport - momentWhenComingToStation + selectedPointTotalTimeSeconds;
                                 var arrivalTime = dispatchTime + goingOnTransportTime;
                                 var onNextPointTotalTimeSeconds = arrivalTime;
+
+                                //var dispatchTime = /*selectedPoint.arrivalTime +*/ waitingTime + selectedPointTotalTimeSeconds;
+                                //var arrivalTime = momentWhenSitInTransport - momentWhenComingToStation + selectedPointTotalTimeSeconds + goingOnTransportTime;
+                                //var onNextPointTotalTimeSeconds = arrivalTime;
                                 
-                                if (this.findElement(nextStation).tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, null)) {
-                                    selectedPoint.dispatchTime = dispatchTime;
+                                var nextPoint = this.findElement(nextStation);
+                                if (nextPoint.tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, 2160000000, dispatchTime)) {
+                                    //selectedPoint.dispatchTime = 
+                                    //selectedPoint.setDispatchTime(dispatchTime);
+                                    //nextPoint.previousPoint.setDispatchTime(dispatchTime);
+                                    
                                     //console.log("upd...");
+                                    //if(selectedPoint.dispatchTime == null) console.log(selectedPoint);
+                                    /*if (selectedPointFromWhichRoute != null && selectedPointFromWhichRoute !== selectedRoute) {
+                                        //if(dispatchTime !== selectedPoint.dispatchTime){
+                                            //console.log("\nCurrent point:");
+                                            //console.log(selectedPoint);
+                                            console.log("Next point:");
+                                            console.log(nextPoint);
+                                            console.log("waitingTime = "+waitingTime);
+                                            console.log("time WhenComingToStation = "+(momentWhenComingToStation-time));
+                                            console.log("time WhenAskingForGoing = "+(momentWhenAskingForGoing-time));
+                                            console.log("time WhenSitInTransport = "+(momentWhenSitInTransport-time));
+                                            console.log("goingOnTransportTime = "+goingOnTransportTime);
+                                            console.log("arrive to current = "+selectedPoint.arrivalTime+" = "+nextPoint.previousPoint.arrivalTime);
+                                            console.log("dispath = "+dispatchTime+" = "+selectedPoint.dispatchTime+" = "+nextPoint.previousPoint.dispatchTime);
+                                            console.log("arrive to next = "+arrivalTime+" = "+nextPoint.arrivalTime);
+                                            
+                                            console.log("\n");
+                                        //}
+                                    }*/
                                 }
                             }
                             else if (table.type === TableType.periodic) {
@@ -163,54 +197,57 @@ class Points {
                     newTime = arrivalTime + reservedTime;
                     /*if (p != myFinishPoint)*/ // newTime += reservedTime;
                     
-                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, null)) {
-                        selectedPoint.dispatchTime = selectedPointTotalTimeSeconds;
+                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, 2160000000, selectedPointTotalTimeSeconds)) {
+                        //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
                         //console.log("upd...");
                     }
                 }
 
             if (myIgnoringFragments != null && myIgnoringFragments.contains(null, null, selectedPointStationHashcode)) continue;
             
+            // Пытаемся пройти пешком до пункта назначения:
             var tryingNewTime = selectedPointTotalTimeSeconds + getTimeForGoingTo(distance(selectedPointCoords, this.finalPoint.coords), speed);
-            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, null)) {
+            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, 2160000000, selectedPointTotalTimeSeconds)) {
                 //console.log("upd: " + selectedPointStation.hashcode);
-                selectedPoint.dispatchTime = selectedPointTotalTimeSeconds;
+                //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
             }
         }
     }
-    optimizeFindedWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime) {
+    optimizeFindedWay(day, time, reservedTime) {
         var tmp = [];
         //console.log("\n\n\nTry optimize...");
         if(this.finalPoint.previousPoint == null) return;
         // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
-        for (let currentPoint = this.finalPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint; currentPoint !== this.startPoint; currentPoint = currentPoint.previousPoint, selectedRoute = currentPoint.fromWhichRoute, previousPoint = currentPoint.previousPoint) {
+        for (let nextPoint = this.finalPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint; nextPoint !== this.startPoint; nextPoint = nextPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint) {
             
             // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
-            if (selectedRoute == null || previousPoint === this.startPoint || previousPoint.fromWhichRoute === selectedRoute) continue;
+            if (selectedRoute == null || currentPoint === this.startPoint || currentPoint.fromWhichRoute === selectedRoute) continue;
             
-            var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(previousPoint.station);//!!! previousPoint
+            var previousStationOfSelectedRoute = selectedRoute.getPreviousStation(currentPoint.station);//!!! currentPoint
             if (previousStationOfSelectedRoute == null) continue;
 
             var point = previousStationOfSelectedRoute.point;
             if (point == null || !(point.isVisited)) continue;
 
             // Загружаем расписание:
-            var table = selectedRoute.getTimetable(point.station);
+            var table = selectedRoute.getTimetable(previousStationOfSelectedRoute);//point.station
             if (table == null) continue;
 
             if (table.type === TableType.table) // Если это точное расписание, то:
             {
                 // Момент отправки.
-                var momentOfDispatchFromPoint = currentPoint.totalTimeSeconds + table.findTimeBefore(time + currentPoint.totalTimeSeconds, day);
+                //var momentOfDispatchFromPoint = nextPoint.totalTimeSeconds + table.findTimeBefore(time + nextPoint.totalTimeSeconds, day);
+                var momentOfDispatchFromPoint = currentPoint.dispatchTime + table.findTimeBefore(time + currentPoint.dispatchTime, day);
+                //var momentOfDispatchFromPoint = point.arrivalTime + reservedTime + table.findTimeBefore(time + currentPoint.arrivalTime, day);
 
                 // Момент отправки не может наступить раньше момента прибытия на эту остановку.
-                if (momentOfDispatchFromPoint >= point.totalTimeSeconds + reservedTime) {  
+                if (momentOfDispatchFromPoint >= point.arrivalTime + reservedTime) {  //point.totalTimeSeconds
 
                     var p1 = point.getTotalGoingTime();
-                    var p2 = previousPoint.getTotalGoingTime();//!!! previousPoint
+                    var p2 = currentPoint.getTotalGoingTime();//!!! currentPoint
                     tmp.push({
-                        /*point: previousPoint,
-                        oldPrevious: previousPoint.previousPoint,
+                        /*point: currentPoint,
+                        oldPrevious: currentPoint.previousPoint,
                         newPrevious: point,*/
                         route: selectedRoute.number + " " + selectedRoute.type,
                         p1: p1,
@@ -223,16 +260,18 @@ class Points {
 
                         //console.log("Добавили станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'");
 
-                        previousPoint.previousPoint = point;
-                        previousPoint.fromWhichRoute = selectedRoute;
-                        previousPoint.fromWhichStation = point.station;
-                        previousPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(previousPoint.station).findTimeAfter(time + momentOfDispatchFromPoint, day);
                         
-                        previousPoint.arrivalTime = previousPoint.totalTimeSeconds;//!!!!!!!!!!!!!
-                        point.changedDispatchTime = "from "+point.dispatchTime+" to "+momentOfDispatchFromPoint;
+                        //currentPoint.totalTimeSeconds = momentOfDispatchFromPoint + selectedRoute.getTimetable(currentPoint.station).findTimeAfter(time + momentOfDispatchFromPoint, day);
+                        currentPoint.totalTimeSeconds = currentPoint.dispatchTime;
+
+                        //console.log("\n"+currentPoint.arrivalTime+" to "+currentPoint.totalTimeSeconds);
+                        currentPoint.arrivalTime = currentPoint.dispatchTime;//currentPoint.totalTimeSeconds;//!!!!!!!!!!!!!
+                        //console.log("from "+point.dispatchTime+" to "+momentOfDispatchFromPoint+", pointArrivalTime = "+point.arrivalTime+", arrivalTime = "+currentPoint.arrivalTime);
                         point.dispatchTime = momentOfDispatchFromPoint;//!!!!!!!!!!!!!!
                         
-
+                        currentPoint.previousPoint = point;
+                        currentPoint.fromWhichRoute = selectedRoute;
+                        currentPoint.fromWhichStation = previousStationOfSelectedRoute;//point.station;
                     }
                 }
                 //else console.log("Не будем добавлять станцию '" + point.station.name + "' к пути на транспорте '" + selectedRoute.type + " " + selectedRoute.number + "'. ( " + momentOfDispatchFromPoint + " < " + (point.totalTimeSeconds + reservedTime) + " )");
@@ -244,13 +283,51 @@ class Points {
         }
         //console.log(tmp);
     }
+    fixTimeAttributes(day, time, reservedTime) {
+        //...
+        
+        if(this.finalPoint.previousPoint == null) return;
+        // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
+        for (let nextPoint = this.finalPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint; nextPoint !== this.startPoint; nextPoint = nextPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint) {
+            
+            // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
+            if (selectedRoute == null || currentPoint === this.startPoint /*|| currentPoint.fromWhichRoute === selectedRoute*/) continue;
+            
+            // Загружаем расписание:
+            var table = selectedRoute.getTimetable(currentPoint.station);
+            if (table == null) continue;
+
+            if (table.type === TableType.table) // Если это точное расписание, то:
+            {
+                // Момент отправки.
+                //var momentOfDispatchFromPoint = nextPoint.totalTimeSeconds + table.findTimeBefore(time + nextPoint.totalTimeSeconds, day);
+                var momentOfDispatchFromPoint = nextPoint.dispatchTime + table.findTimeBefore(time + nextPoint.dispatchTime, day);
+                //var momentOfDispatchFromPoint = point.arrivalTime + reservedTime + table.findTimeBefore(time + currentPoint.arrivalTime, day);
+
+                currentPoint.dispatchTime = momentOfDispatchFromPoint;
+                if(currentPoint.fromWhichRoute != selectedRoute) {
+                    currentPoint.totalTimeSeconds = currentPoint.arrivalTime + reservedTime;
+                }
+                else {
+                    currentPoint.arrivalTime = momentOfDispatchFromPoint
+                    currentPoint.totalTimeSeconds = momentOfDispatchFromPoint;
+                }
+                
+            }
+            else  { //if (table.type === TableType.periodic)
+                throw new Error();
+            }
+            
+        }
+    }
     countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
         //try {
 
         var day = (new Date()).getDay();
 
         this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
-        this.optimizeFindedWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
+        this.optimizeFindedWay(day, time, reservedTime);
+        this.fixTimeAttributes(day, time, reservedTime);
 
         //}
         //catch(e) {

@@ -19,10 +19,10 @@
 
         this.previousPoint = null;
 
-        this.arrivalTime = null;
-        this.dispatchTime = null;
+        this.arrivalTime = 0;
+        this.dispatchTime = 2160000000;
     }
-    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime) {
+    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime, dispatchTimeFromPrevious) {
         if (totalTimeSeconds < this.totalTimeSeconds) {
             this.fromWhichRoute = fromWhichRoute;
             this.previousPoint = previousPoint;
@@ -31,9 +31,14 @@
             this.arrivalTime = arrivalTime;
             this.dispatchTime = dispatchTime;
 
+            this.previousPoint.setDispatchTime(dispatchTimeFromPrevious);
+
             return true;
         }
         return false;
+    }
+    setDispatchTime(value){
+        this.dispatchTime = value;
     }
     setVisited() {
         this.isVisited = true;
@@ -73,6 +78,7 @@
     getTotalWaitingTime() {
         var result = 0;
         var tmpP = this.previousPoint;
+        if(tmpP == null) return result;
         while (tmpP.previousPoint != null) {
             result += tmpP.dispatchTime - tmpP.arrivalTime;
             tmpP = tmpP.previousPoint;
@@ -81,12 +87,39 @@
     }
     getMinimalWaitingTime() {
         var tmpP = this.previousPoint;
-        var result = tmpP.dispatchTime - tmpP.arrivalTime;
+        var routeToNextStation = tmpP.fromWhichRoute;
+        var result = 2160000000;
+        if(tmpP == null) return result;//0;
         tmpP = tmpP.previousPoint;
-        if(tmpP == null) return result;
+        if(tmpP == null) return result;//0;
+        //routeToNextStation = tmpP.fromWhichRoute;
         while (tmpP.previousPoint != null) {
-            var temp = tmpP.dispatchTime - tmpP.arrivalTime;
-            if(temp < result) result = temp;
+            if(routeToNextStation != tmpP.fromWhichRoute && routeToNextStation!=null) {
+                var temp = tmpP.dispatchTime - tmpP.arrivalTime;
+                if(temp < result) result = temp;
+            }
+            routeToNextStation = tmpP.fromWhichRoute;
+            tmpP = tmpP.previousPoint;
+        }
+        return result;
+    }
+    getRiskEffectivity() {
+        function countProbability(xTimeSeconds) {
+            return 2*(Math.atan(Math.exp(1.5*xTimeSeconds/60+0.5))/Math.PI);
+        }
+        var tmpP = this.previousPoint;
+        var routeToNextStation = tmpP.fromWhichRoute;
+        var result = 1;
+        if(tmpP == null) return result;//0;
+        tmpP = tmpP.previousPoint;
+        if(tmpP == null) return result;//0;
+        //routeToNextStation = tmpP.fromWhichRoute;
+        while (tmpP.previousPoint != null) {
+            if(routeToNextStation != tmpP.fromWhichRoute && routeToNextStation!=null) {
+                var temp = tmpP.dispatchTime - tmpP.arrivalTime;
+                result *= countProbability(temp);
+            }
+            routeToNextStation = tmpP.fromWhichRoute;
             tmpP = tmpP.previousPoint;
         }
         return result;
