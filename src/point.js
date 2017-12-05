@@ -105,7 +105,8 @@
     }
     getRiskEffectivity() {
         function countProbability(xTimeSeconds) {
-            return 2*(Math.atan(Math.exp(1.5*xTimeSeconds/60+0.5))/Math.PI);
+            //return 2*(Math.atan(Math.exp(1.5*xTimeSeconds/60+0.5))/Math.PI);
+            return 2*(Math.atan(Math.exp(1.1*xTimeSeconds/60+0.3))/Math.PI);
         }
         var tmpP = this.previousPoint;
         var routeToNextStation = tmpP.fromWhichRoute;

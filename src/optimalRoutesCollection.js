@@ -41,7 +41,7 @@ class OptimalRoutesCollection extends Array {
         }
         return null;
     }*/
-    constructor(allStations, nowPos, needPos, time, types, speed, dopTimeMinutes) {
+    constructor(allStations, nowPos, needPos, time, types, speed, dopTimeMinutes, oneWayOnly) {
         super();
         //console.log("TEST_111111111111111111111111111111111111111111111111111111111111111");/////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!
         this.getOptimalWays = function() {
@@ -79,39 +79,42 @@ class OptimalRoutesCollection extends Array {
         
         var tmpAllCount = 1, tmpRealCount = 1;
 
-        //TODO: use solutions tree
-        for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark()) {
-            var ddd = 0.85;
+        if (!oneWayOnly){
+        
+            //TODO: use solutions tree
+            for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark()) {
+                var ddd = 0.85;
 
-            ignoringRoutes = [];
-            // Проходим по всем ребрам выбранного пути и строим новые маршруты при удалении ребер:
-            for (var tmpP = selectedOptimalRoute.myPoints.finalPoint; tmpP.previousPoint != null; tmpP = tmpP.previousPoint) {
-                if(tmpP == null) console.log("err in optimalRoutesCollection.js");
-                if (/*tmpP.fromWhichRoute != null &&*/ !ignoringRoutes.includes(tmpP.fromWhichRoute)) ignoringRoutes.push(tmpP.fromWhichRoute);
-            }
-            for (var i = 0, n = ignoringRoutes.length, r = ignoringRoutes[0]; i < n; r = ignoringRoutes[++i]) {
-                if (selectedOptimalRoute.ignoringRoutes.includes(r)) continue;
-                var ignoringRoutesAdd = [];
-                ignoringRoutesAdd = ignoringRoutesAdd.concat(selectedOptimalRoute.ignoringRoutes);
-                ignoringRoutesAdd.push(r);
-                myPoints = new Points(nowPos, needPos);
-                var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
-                
-                tmpAllCount++;
+                ignoringRoutes = [];
+                // Проходим по всем ребрам выбранного пути и строим новые маршруты при удалении ребер:
+                for (var tmpP = selectedOptimalRoute.myPoints.finalPoint; tmpP.previousPoint != null; tmpP = tmpP.previousPoint) {
+                    if(tmpP == null) console.log("err in optimalRoutesCollection.js");
+                    if (/*tmpP.fromWhichRoute != null &&*/ !ignoringRoutes.includes(tmpP.fromWhichRoute)) ignoringRoutes.push(tmpP.fromWhichRoute);
+                }
+                for (var i = 0, n = ignoringRoutes.length, r = ignoringRoutes[0]; i < n; r = ignoringRoutes[++i]) {
+                    if (selectedOptimalRoute.ignoringRoutes.includes(r)) continue;
+                    var ignoringRoutesAdd = [];
+                    ignoringRoutesAdd = ignoringRoutesAdd.concat(selectedOptimalRoute.ignoringRoutes);
+                    ignoringRoutesAdd.push(r);
+                    myPoints = new Points(nowPos, needPos);
+                    var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
+                    
+                    tmpAllCount++;
 
-                if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd + 600) {
-                    tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
-                    var ok = false;
-                    for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
-                        if (opt.hash == null) opt.hash = JSON.stringify(opt.points);
-                        if (opt.hash === tmpOptimalRoute.hash) {
-                            ok = true;
-                            break;
+                    if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd + 600) {
+                        tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
+                        var ok = false;
+                        for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
+                            if (opt.hash == null) opt.hash = JSON.stringify(opt.points);
+                            if (opt.hash === tmpOptimalRoute.hash) {
+                                ok = true;
+                                break;
+                            }
                         }
+                        if (ok) continue;
+                        this.push(tmpOptimalRoute);
+                        tmpRealCount++;
                     }
-                    if (ok) continue;
-                    this.push(tmpOptimalRoute);
-                    tmpRealCount++;
                 }
             }
         }
