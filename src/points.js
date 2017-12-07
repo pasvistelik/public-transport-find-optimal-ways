@@ -43,7 +43,7 @@ class Points {
         for (var i = 0, n = stationsList.length, st = stationsList[0], add, goingTime; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
 
-            add = new Point(2160000000, st, null, null);
+            add = new Point(2160000000, st, null, null, 2160000000);
             add.heuristicTimeToFinalPoint = distance(add.coords, finalPointCoords) / 5;
             goingTime = getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed);
             add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, 2160000000, 0, goingTime); //!!!!! param_1: is need to add reservedTime??????

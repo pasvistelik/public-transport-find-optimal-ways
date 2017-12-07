@@ -122,7 +122,7 @@ class OptimalRoutesCollection extends Array {
             }
         }
         console.log("All: "+ tmpAllCount + ", real: " + tmpRealCount);
-        console.log(this);
+        //console.log(this);
     }
 }
 
