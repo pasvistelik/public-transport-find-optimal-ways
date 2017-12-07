@@ -299,7 +299,7 @@ class Points {
         for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
             var selectedPointStation = selectedPoint.station;
             var nextStation = selectedRoute.getNextStation(selectedPointStation);
-            console.log(nextStation);//11111111111111
+            //console.log(nextStation);//11111111111111
             if (nextStation == null || nextStation === selectedPointStation || nextStation === startStation) break;
             nextPoint = this.findElement(nextStation);
             var dist = distance(nextPoint.coords, this.finalPoint.coords);
