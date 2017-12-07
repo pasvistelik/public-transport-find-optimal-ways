@@ -218,6 +218,7 @@ class Points {
         }
 
 
+        this.finalPoint.oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(this.finalPoint.previousPoint == null) return;

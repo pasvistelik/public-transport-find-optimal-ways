@@ -57,7 +57,7 @@ class OptimalRoutesCollection extends Array {
                 if (!(t.isVisited)) {
                     p = t;
                     for (t = this[++i]; i < n; t = this[++i]) {
-                        if (!(t.isVisited) && t.totalTimeSeconds < p.totalTimeSeconds) {
+                        if (!(t.isVisited) && t.oldTotalTimeSeconds < p.oldTotalTimeSeconds) {
                             p = t;
                         }
                     }
@@ -104,7 +104,7 @@ class OptimalRoutesCollection extends Array {
                     
                     tmpAllCount++;
 
-                    if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd + 1200) {
+                    if (tmpOptimalRoute.oldTotalTimeSeconds <= this[0].oldTotalTimeSeconds / ddd + 1200) {
                         tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
                         var ok = false;
                         for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
@@ -121,6 +121,10 @@ class OptimalRoutesCollection extends Array {
                 }
             }
         }
+
+        //for(var i = 0, n = this.length; i < n; i++){
+        //    this[i].optimizeAroundFinalPoint();
+        //}
         console.log("All: "+ tmpAllCount + ", real: " + tmpRealCount);
         //console.log(this);
     }

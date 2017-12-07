@@ -35,7 +35,8 @@ class OptimalRoute {
             if (tmpP.previousPoint == null && tmpP.coords !== myPoints.startPoint.coords)
                 throw new Error("Где-то удалилась часть маршрута...");
         }
-
+        
+        this.oldTotalTimeSeconds = myPoints.finalPoint.oldTotalTimeSeconds;
         this.totalTimeSeconds = myPoints.finalPoint.totalTimeSeconds;
         this.totalGoingTime = myPoints.finalPoint.getTotalGoingTime();
         this.totalTransportChangingCount = myPoints.finalPoint.getTotalTransportChangingCount();
