@@ -88,10 +88,10 @@
         return result;
     }
     getMinimalWaitingTime() {
-        var tmpP = this.previousPoint;
-        var routeToNextStation = tmpP.fromWhichRoute;
         var result = 2160000000;
+        var tmpP = this.previousPoint;
         if(tmpP == null) return result;//0;
+        var routeToNextStation = tmpP.fromWhichRoute;
         tmpP = tmpP.previousPoint;
         if(tmpP == null) return result;//0;
         //routeToNextStation = tmpP.fromWhichRoute;
