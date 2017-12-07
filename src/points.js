@@ -244,13 +244,13 @@ class Points {
         //return;//11111111111
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
-            for (let selectedPoint = this.finalPoint.previousPoint, timeSeconds = selectedPoint.totalTimeSeconds; ;){
+            for (var selectedPoint = this.finalPoint.previousPoint, timeSeconds = selectedPoint.totalTimeSeconds; ;){
                 
-                if (distance(selectedPoint.coords, this.finalPoint.coords) === minimalDistance || selectedPoint.totalTimeSeconds > timeSeconds + 600) break;
+                if (distance(selectedPoint.coords, this.finalPoint.coords) === minimalDistance) break; // || selectedPoint.totalTimeSeconds > timeSeconds + 600
 
                 var selectedPointStation = selectedPoint.station;
                 // Следующая остановка у данного транспорта:
-                let nextStation = selectedRoute.getNextStation(selectedPointStation);
+                var nextStation = selectedRoute.getNextStation(selectedPointStation);
                 
                 if (nextStation != null) // Если остановка не является конечной, то:
                 {
@@ -284,8 +284,8 @@ class Points {
                         nextPoint.dispatchTime = arrivalTime;
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
                         nextPoint.isVisited = true;
-                        let newDistance = distance(nextPoint.coords, this.finalPoint.coords);
-                        let newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
+                        var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
+                        var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
                         this.finalPoint.previousPoint = nextPoint;
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
