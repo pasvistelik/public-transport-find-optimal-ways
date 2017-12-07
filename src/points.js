@@ -302,12 +302,13 @@ class Points {
             if (nextStation == null) break;
             let nextPoint = this.findElement(nextStation);
             let dist = distance(nextPoint.coords, this.finalPoint.coords);
+            console.log("Check to change "+oldDistance+" to "+minimalDistance);
             if (dist < minimalDistance){
                 minimalDistance = dist;
             }
             selectedPoint = nextPoint;
         }
-        console.log("Can change "+oldDistance+" to "+minimalDistance);
+        console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
         return;//11111111111
         if (oldDistance > minimalDistance){
             for (let selectedPoint = this.finalPoint.previousPoint; ;){
