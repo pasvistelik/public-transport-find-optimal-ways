@@ -292,14 +292,14 @@ class Points {
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
-
+        var startStation = this.finalPoint.previousPoint.station;
         var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
         for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
             var selectedPointStation = selectedPoint.station;
             var nextStation = selectedRoute.getNextStation(selectedPointStation);
             console.log(nextStation);//11111111111111
-            if (nextStation == null || nextStation === selectedPointStation) break;
+            if (nextStation == null || nextStation === selectedPointStation || nextPoint === startStation) break;
             nextPoint = this.findElement(nextStation);
             var dist = distance(nextPoint.coords, this.finalPoint.coords);
             //console.log("Check to change "+minimalDistance+" to "+dist);
