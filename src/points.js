@@ -298,11 +298,11 @@ class Points {
         for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
             var selectedPointStation = selectedPoint.station;
             var nextStation = selectedRoute.getNextStation(selectedPointStation);
-            console.log(nextStation);//11111111111111
-            if (nextStation == null) break;
+            //console.log(nextStation);//11111111111111
+            if (nextStation == null || nextStation === selectedPointStation) break;
             nextPoint = this.findElement(nextStation);
             var dist = distance(nextPoint.coords, this.finalPoint.coords);
-            console.log("Check to change "+minimalDistance+" to "+dist);
+            //console.log("Check to change "+minimalDistance+" to "+dist);
             if (dist < minimalDistance){
                 minimalDistance = dist;
             }
