@@ -310,6 +310,7 @@ class Points {
         }
         console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
         return;//11111111111
+        console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             for (let selectedPoint = this.finalPoint.previousPoint; ;){
                 
