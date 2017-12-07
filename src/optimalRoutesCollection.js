@@ -79,6 +79,8 @@ class OptimalRoutesCollection extends Array {
         
         var tmpAllCount = 1, tmpRealCount = 1;
 
+
+        oneWayOnly = true;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (!oneWayOnly){
         
             //TODO: use solutions tree

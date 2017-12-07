@@ -1,5 +1,5 @@
 ﻿class Point {
-    constructor(totalTimeSeconds, station_or_crds, fromWhichStation, fromWhichRoute) {
+    constructor(totalTimeSeconds, station_or_crds, fromWhichStation, fromWhichRoute, totalGoingTimeSeconds) {
         if (station_or_crds.hashcode !== undefined) {
             this.station = station_or_crds;
             this.stationCode = station_or_crds.hashcode;
@@ -14,6 +14,7 @@
         this.totalTimeSeconds = totalTimeSeconds;
         this.fromWhichStation = fromWhichStation;
         this.fromWhichRoute = fromWhichRoute;
+        this.totalGoingTimeSeconds = totalGoingTimeSeconds;
 
         this.isVisited = false;
 
@@ -22,8 +23,9 @@
         this.arrivalTime = 0;
         this.dispatchTime = 2160000000;
     }
-    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime, dispatchTimeFromPrevious) {
-        if (totalTimeSeconds < this.totalTimeSeconds) {
+    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime, dispatchTimeFromPrevious, totalGoingTimeSeconds) {
+        //if (totalTimeSeconds < this.totalTimeSeconds) {
+        if (totalGoingTimeSeconds < this.totalGoingTimeSeconds) {
             this.fromWhichRoute = fromWhichRoute;
             this.previousPoint = previousPoint;
             this.totalTimeSeconds = totalTimeSeconds;

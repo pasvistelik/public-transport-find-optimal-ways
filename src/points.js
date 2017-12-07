@@ -38,7 +38,7 @@ class Points {
     }
     fillStartData(stationsList, goingSpeed, reservedTime, myIgnoringFragments, ignoringRoutes) {
         var tmpTime = getTimeForGoingTo(distance(this.startPoint.coords, this.finalPoint.coords), goingSpeed);
-        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(tmpTime /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null, tmpTime, 2160000000, 0);
+        if (ignoringRoutes == null || !(ignoringRoutes.includes(null))) this.finalPoint.tryUpdate(tmpTime /*+ 1800/*+ TimeSpan.FromMinutes(20)*/, this.startPoint, null, null, tmpTime, 2160000000, 0, tmpTime);
         const finalPointCoords = this.finalPoint.coords;
         for (var i = 0, n = stationsList.length, st = stationsList[0], add, goingTime; i < n; st = stationsList[++i]) {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(st.hashcode, null, null)) continue;
@@ -46,7 +46,7 @@ class Points {
             add = new Point(2160000000, st, null, null);
             add.heuristicTimeToFinalPoint = distance(add.coords, finalPointCoords) / 5;
             goingTime = getTimeForGoingTo(distance(this.startPoint.coords, st.coords), goingSpeed);
-            add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, 2160000000, 0);
+            add.tryUpdate(goingTime + reservedTime, this.startPoint, null, null, goingTime, 2160000000, 0, goingTime); //!!!!! param_1: is need to add reservedTime??????
             this.collection.push(add);
         }
     }
@@ -62,11 +62,14 @@ class Points {
         for (var i = 0, n = this.collection.length, t = this.collection[0], p = null, currentMarkValue; i < n; t = this.collection[++i]) {
             if (!(t.isVisited)) {
                 p = t;
-                currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                //currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                currentMarkValue = p.totalGoingTimeSeconds;
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < currentMarkValue) {
+                    //if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < currentMarkValue) {
+                    if (!(t.isVisited) && t.totalGoingTimeSeconds < currentMarkValue) {
                         p = t;
-                        currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                        //currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                        currentMarkValue = p.totalGoingTimeSeconds;
                     }
                 }
                 return p;
@@ -147,7 +150,7 @@ class Points {
                                 //var onNextPointTotalTimeSeconds = arrivalTime;
                                 
                                 var nextPoint = this.findElement(nextStation);
-                                if (nextPoint.tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, 2160000000, dispatchTime)) {
+                                if (nextPoint.tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, 2160000000, dispatchTime, currentPoint.totalGoingTimeSeconds)) {
                                     //selectedPoint.dispatchTime = 
                                     //selectedPoint.setDispatchTime(dispatchTime);
                                     //nextPoint.previousPoint.setDispatchTime(dispatchTime);
@@ -197,7 +200,7 @@ class Points {
                     newTime = arrivalTime + reservedTime;
                     /*if (p != myFinishPoint)*/ // newTime += reservedTime;
                     
-                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, 2160000000, selectedPointTotalTimeSeconds)) {
+                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, 2160000000, selectedPointTotalTimeSeconds, currentPoint.totalGoingTimeSeconds + goingTime)) {
                         //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
                         //console.log("upd...");
                     }
@@ -206,8 +209,9 @@ class Points {
             if (myIgnoringFragments != null && myIgnoringFragments.contains(null, null, selectedPointStationHashcode)) continue;
             
             // Пытаемся пройти пешком до пункта назначения:
-            var tryingNewTime = selectedPointTotalTimeSeconds + getTimeForGoingTo(distance(selectedPointCoords, this.finalPoint.coords), speed);
-            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, 2160000000, selectedPointTotalTimeSeconds)) {
+            var goingTime = getTimeForGoingTo(distance(selectedPointCoords, this.finalPoint.coords), speed);
+            var tryingNewTime = selectedPointTotalTimeSeconds + goingTime;
+            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, 2160000000, selectedPointTotalTimeSeconds, currentPoint.totalGoingTimeSeconds + goingTime)) {
                 //console.log("upd: " + selectedPointStation.hashcode);
                 //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
             }
