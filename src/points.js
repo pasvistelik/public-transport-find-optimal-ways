@@ -289,12 +289,11 @@ class Points {
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        var selectedPoint = this.finalPoint.previousPoint;
-        var selectedRoute = selectedPoint.fromWhichRoute;
+        var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
 
-        var minimalDistance = distance(selectedPoint.coords, this.finalPoint.coords);
+        var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
         for (let selectedPoint = this.finalPoint.previousPoint; ;){
             let selectedPointStation = selectedPoint.station;
@@ -302,7 +301,7 @@ class Points {
             if (nextStation == null) break;
             let nextPoint = this.findElement(nextStation);
             let dist = distance(nextPoint.coords, this.finalPoint.coords);
-            console.log("Check to change "+oldDistance+" to "+minimalDistance);
+            console.log("Check to change "+minimalDistance+" to "+dist);
             if (dist < minimalDistance){
                 minimalDistance = dist;
             }
