@@ -309,7 +309,7 @@ class Points {
             }
         }
         //console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
-        return;//11111111111
+        //return;//11111111111
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             for (let selectedPoint = this.finalPoint.previousPoint; ;){
@@ -357,9 +357,12 @@ class Points {
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
                         this.finalPoint.arrivalTime = arrivalTime + newGoingTimeFromNewToFinal;
+                        let oldValue = this.finalPoint.totalGoingTimeSeconds;
                         this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;
 
                         selectedPoint = nextPoint;
+
+                        console.log("Changed:  "+oldValue+" to "+this.finalPoint.totalGoingTimeSeconds);
                     }
                     else if (table.type === TableType.periodic) {
                         throw new Error();
