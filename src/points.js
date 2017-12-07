@@ -293,8 +293,8 @@ class Points {
         if (selectedRoute == null) return;
         
         var startStation = this.finalPoint.previousPoint.station;
-        console.log("startStation:");
-        console.log(startStation);
+        if (startStation == null) return;
+        console.log("startStation: "+startStation.hashcode);
         var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
         for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
