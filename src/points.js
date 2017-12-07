@@ -294,14 +294,13 @@ class Points {
         
         var startStation = this.finalPoint.previousPoint.station;
         if (startStation == null) return;
-        console.log("startStation: "+startStation.hashcode);
         var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
         for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
             var selectedPointStation = selectedPoint.station;
             var nextStation = selectedRoute.getNextStation(selectedPointStation);
             console.log(nextStation);//11111111111111
-            if (nextStation == null || nextStation === selectedPointStation || nextPoint.hashcode === startStation.hashcode) break;
+            if (nextStation == null || nextStation === selectedPointStation || nextStation === startStation) break;
             nextPoint = this.findElement(nextStation);
             var dist = distance(nextPoint.coords, this.finalPoint.coords);
             //console.log("Check to change "+minimalDistance+" to "+dist);
