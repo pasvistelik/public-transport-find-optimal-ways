@@ -33,6 +33,9 @@
             this.arrivalTime = arrivalTime;
             this.dispatchTime = dispatchTime;
 
+            
+            this.totalGoingTimeSeconds = totalGoingTimeSeconds;
+
             this.previousPoint.setDispatchTime(dispatchTimeFromPrevious);
 
             return true;
