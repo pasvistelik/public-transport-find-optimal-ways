@@ -334,7 +334,7 @@ class Points {
                         // (сколько будем ехать до следующей остановки):
                         var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
     
-                        var dispatchTime = momentWhenSitInTransport - momentWhenComingToStation + selectedPointTotalTimeSeconds;
+                        var dispatchTime = /*momentWhenSitInTransport - momentWhenComingToStation*/ + selectedPointTotalTimeSeconds;
                         var arrivalTime = dispatchTime + goingOnTransportTime;
                         var onNextPointTotalTimeSeconds = arrivalTime;
                         
