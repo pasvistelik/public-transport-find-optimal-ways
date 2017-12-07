@@ -292,7 +292,7 @@ class Points {
         var selectedPoint = this.finalPoint.previousPoint;
         var selectedRoute = selectedPoint.fromWhichRoute;
         if (selectedRoute == null) return;
-        var selectedPointStation = selectedPoint.station;
+        
 
         var minimalDistance = distance(selectedPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
@@ -307,11 +307,14 @@ class Points {
             }
             selectedPoint = nextPoint;
         }
+        console.log("Can change "+oldDistance+" to "+minimalDistance);
+        return;//11111111111
         if (oldDistance > minimalDistance){
             for (let selectedPoint = this.finalPoint.previousPoint; ;){
                 
                 if (distance(selectedPoint.coords, this.finalPoint.coords) == minimalDistance) break;
 
+                var selectedPointStation = selectedPoint.station;
                 // Следующая остановка у данного транспорта:
                 let nextStation = selectedRoute.getNextStation(selectedPointStation);
                 
