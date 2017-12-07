@@ -284,7 +284,7 @@ class Points {
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
                         nextPoint.isVisited = true;
                         let newDistance = distance(nextPoint.coords, this.finalPoint.coords);
-                        let newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, goingSpeed);
+                        let newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
                         this.finalPoint.previousPoint = nextPoint;
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
@@ -308,7 +308,7 @@ class Points {
 
 
     }
-    optimizeFindedWay(day, time, reservedTime, goingSpeed) {
+    optimizeFindedWay(day, time, reservedTime, speed) {
         var tmp = [];
         //console.log("\n\n\nTry optimize...");
         if(this.finalPoint.previousPoint == null) return;
@@ -384,7 +384,7 @@ class Points {
 
         //console.log(tmp);
     }
-    fixTimeAttributes(day, time, reservedTime, goingSpeed) {
+    fixTimeAttributes(day, time, reservedTime, speed) {
         //...
         
         if(this.finalPoint.previousPoint == null) return;
