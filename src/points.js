@@ -333,7 +333,7 @@ class Points {
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
+        /*var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
         var startStation = this.finalPoint.previousPoint.station;
@@ -395,6 +395,7 @@ class Points {
                         nextPoint.arrivalTime = arrivalTime;
                         nextPoint.dispatchTime = arrivalTime;
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
+                        nextPoint.isVisited = true;
                         let newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         let newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, goingSpeed);
                         this.finalPoint.previousPoint = nextPoint;
@@ -414,7 +415,7 @@ class Points {
                 }
     
             }
-        }
+        }*/
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
