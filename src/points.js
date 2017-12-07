@@ -62,13 +62,13 @@ class Points {
         for (var i = 0, n = this.collection.length, t = this.collection[0], p = null, currentMarkValue; i < n; t = this.collection[++i]) {
             if (!(t.isVisited)) {
                 p = t;
-                currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                currentMarkValue = p.totalTimeSeconds;// + p.heuristicTimeToFinalPoint;
                 //currentMarkValue = p.totalGoingTimeSeconds;
                 for (t = this.collection[++i]; i < n; t = this.collection[++i]) {
-                    if (!(t.isVisited) && t.totalTimeSeconds + t.heuristicTimeToFinalPoint < currentMarkValue) {
+                    if (!(t.isVisited) && t.totalTimeSeconds /*+ t.heuristicTimeToFinalPoint*/ < currentMarkValue) {
                     //if (!(t.isVisited) && t.totalGoingTimeSeconds < currentMarkValue) {
                         p = t;
-                        currentMarkValue = p.totalTimeSeconds + p.heuristicTimeToFinalPoint;
+                        currentMarkValue = p.totalTimeSeconds;// + p.heuristicTimeToFinalPoint;
                         //currentMarkValue = p.totalGoingTimeSeconds;
                     }
                 }
