@@ -295,17 +295,17 @@ class Points {
 
         var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
-        for (let selectedPoint = this.finalPoint.previousPoint; ;){
-            let selectedPointStation = selectedPoint.station;
-            let nextStation = selectedRoute.getNextStation(selectedPointStation);
+        for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
+            var selectedPointStation = selectedPoint.station;
+            var nextStation = selectedRoute.getNextStation(selectedPointStation);
+            console.log(nextStation);//11111111111111
             if (nextStation == null) break;
-            let nextPoint = this.findElement(nextStation);
-            let dist = distance(nextPoint.coords, this.finalPoint.coords);
+            nextPoint = this.findElement(nextStation);
+            var dist = distance(nextPoint.coords, this.finalPoint.coords);
             console.log("Check to change "+minimalDistance+" to "+dist);
             if (dist < minimalDistance){
                 minimalDistance = dist;
             }
-            selectedPoint = nextPoint;
         }
         console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
         return;//11111111111
