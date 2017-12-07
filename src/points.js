@@ -221,7 +221,7 @@ class Points {
         this.finalPoint.oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(this.finalPoint.previousPoint == null) return;
+        /*if(this.finalPoint.previousPoint == null) return;
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
@@ -304,7 +304,7 @@ class Points {
                 }
     
             }
-        }
+        }*/
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
