@@ -334,8 +334,7 @@ class Points {
                         // (сколько будем ехать до следующей остановки):
                         var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
     
-                        var dispatchTime = /*momentWhenSitInTransport - momentWhenComingToStation*/ + selectedPointTotalTimeSeconds;
-                        var arrivalTime = dispatchTime + goingOnTransportTime;
+                        var arrivalTime = selectedPoint.totalTimeSeconds + goingOnTransportTime;
                         var onNextPointTotalTimeSeconds = arrivalTime;
                         
                         var nextPoint = this.findElement(nextStation);
@@ -345,7 +344,7 @@ class Points {
                         nextPoint.totalTimeSeconds = onNextPointTotalTimeSeconds;
                         nextPoint.fromWhichStation = selectedPointStation;
                         nextPoint.arrivalTime = arrivalTime;
-                        nextPoint.dispatchTime = dispatchTime;
+                        nextPoint.dispatchTime = arrivalTime;
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
                         let newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         let newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, goingSpeed);
