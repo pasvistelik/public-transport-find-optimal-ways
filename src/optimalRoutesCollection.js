@@ -104,7 +104,7 @@ class OptimalRoutesCollection extends Array {
                     
                     tmpAllCount++;
 
-                    if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd + 600) {
+                    if (tmpOptimalRoute.totalTimeSeconds <= this[0].totalTimeSeconds / ddd + 1200) {
                         tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
                         var ok = false;
                         for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
