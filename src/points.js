@@ -220,6 +220,7 @@ class Points {
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if(this.finalPoint.previousPoint == null) return;
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
