@@ -330,8 +330,8 @@ class Points {
         var day = (new Date()).getDay();
 
         this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
-        //this.optimizeFindedWay(day, time, reservedTime);
-        //this.fixTimeAttributes(day, time, reservedTime);
+        this.optimizeFindedWay(day, time, reservedTime);
+        this.fixTimeAttributes(day, time, reservedTime);
 
         //}
         //catch(e) {
