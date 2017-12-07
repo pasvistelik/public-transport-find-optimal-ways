@@ -150,7 +150,7 @@ class Points {
                                 //var onNextPointTotalTimeSeconds = arrivalTime;
                                 
                                 var nextPoint = this.findElement(nextStation);
-                                if (nextPoint.tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, 2160000000, dispatchTime, currentPoint.totalGoingTimeSeconds)) {
+                                if (nextPoint.tryUpdate(onNextPointTotalTimeSeconds, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, 2160000000, dispatchTime, selectedPoint.totalGoingTimeSeconds)) {
                                     //selectedPoint.dispatchTime = 
                                     //selectedPoint.setDispatchTime(dispatchTime);
                                     //nextPoint.previousPoint.setDispatchTime(dispatchTime);
@@ -200,7 +200,7 @@ class Points {
                     newTime = arrivalTime + reservedTime;
                     /*if (p != myFinishPoint)*/ // newTime += reservedTime;
                     
-                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, 2160000000, selectedPointTotalTimeSeconds, currentPoint.totalGoingTimeSeconds + goingTime)) {
+                    if (p.tryUpdate(newTime, selectedPoint, selectedPointStation, null, arrivalTime, 2160000000, selectedPointTotalTimeSeconds, selectedPoint.totalGoingTimeSeconds + goingTime)) {
                         //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
                         //console.log("upd...");
                     }
@@ -211,7 +211,7 @@ class Points {
             // Пытаемся пройти пешком до пункта назначения:
             var goingTime = getTimeForGoingTo(distance(selectedPointCoords, this.finalPoint.coords), speed);
             var tryingNewTime = selectedPointTotalTimeSeconds + goingTime;
-            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, 2160000000, selectedPointTotalTimeSeconds, currentPoint.totalGoingTimeSeconds + goingTime)) {
+            if (this.finalPoint.tryUpdate(tryingNewTime, selectedPoint, selectedPointStation, null, tryingNewTime, 2160000000, selectedPointTotalTimeSeconds, selectedPoint.totalGoingTimeSeconds + goingTime)) {
                 //console.log("upd: " + selectedPointStation.hashcode);
                 //selectedPoint.setDispatchTime(selectedPointTotalTimeSeconds);
             }
