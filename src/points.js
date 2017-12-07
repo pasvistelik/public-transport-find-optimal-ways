@@ -16,14 +16,14 @@ const TableType = { table: 1, periodic: 2 };
 class Points {
     constructor(nowPos, needPos) {
         this.collection = [];
-        this.startPoint = new Point(0, nowPos, null, null);
-        this.finalPoint = new Point(2160000000, needPos, null, null);
+        this.startPoint = new Point(0, nowPos, null, null, 0);
+        this.finalPoint = new Point(2160000000, needPos, null, null, 2160000000);
         this.currentSelectedPoint = null;
     }
     findElement(station_or_point) {
         if (station_or_point.hashcode != null) {
             if (station_or_point.point != null) return station_or_point.point;
-            var newCreatdPoint = new Point(2160000000, station_or_point, null, null);
+            var newCreatdPoint = new Point(2160000000, station_or_point, null, null, 2160000000);
             newCreatdPoint.heuristicTimeToFinalPoint = distance(newCreatdPoint.coords, this.finalPoint.coords) / 5;//!!!
             this.collection.push(newCreatdPoint);
             return newCreatdPoint;
