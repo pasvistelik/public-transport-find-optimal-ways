@@ -402,7 +402,7 @@ class Points {
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                        //if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
+                        if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                         let oldValue = this.finalPoint.totalGoingTimeSeconds;
 
@@ -416,7 +416,7 @@ class Points {
 
                         selectedPoint = nextPoint;
 
-                        console.log("[TMP]: Changed:  "+oldValue+" to "+(nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal));
+                        //console.log("[TMP]: Changed:  "+oldValue+" to "+(nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal));
                     }
                     else if (table.type === TableType.periodic) {
                         throw new Error();
