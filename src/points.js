@@ -388,14 +388,17 @@ class Points {
 
                         var nextPoint = this.findElement(nextStation);
                         
-                        nextPoint.fromWhichRoute = selectedRoute;
+                        /*nextPoint.fromWhichRoute = selectedRoute;
                         nextPoint.previousPoint = selectedPoint;
                         nextPoint.totalTimeSeconds = arrivalTime;
                         nextPoint.fromWhichStation = selectedPointStation;
                         nextPoint.arrivalTime = arrivalTime;
                         nextPoint.dispatchTime = arrivalTime;
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
-                        nextPoint.isVisited = true;
+                        nextPoint.isVisited = true;*/
+
+                        nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds);
+
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
