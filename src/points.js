@@ -357,8 +357,8 @@ class Points {
                 minimalDistance = dist;
             }
         }
-        //console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
-        //return;//11111111111
+        console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
+        return;//1!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@#########################$$$$$$$$$$$$$$$$$$$$$$$$$$11112222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333111111
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             var oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;

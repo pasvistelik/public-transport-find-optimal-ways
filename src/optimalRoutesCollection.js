@@ -140,8 +140,11 @@ export default OptimalRoutesCollection;
 function clearStations(stations){
     var j = 0;
     for(let i = 0, n = stations.length; i < n; i++){
-        if(stations[i].point) j++;
+        //if(stations[i].point) j++;
         stations[i].point = null;
     }
-    console.log("Cleared "+j+" stations.");
+    for(let i = 0, n = stations.length; i < n; i++){
+        if(stations[i].point) j++;
+    }
+    console.log("Not cleared: "+j+" stations.");
 }
