@@ -121,7 +121,7 @@ class OptimalRoutesCollection extends Array {
                         if (ok) continue;
                         this.push(tmpOptimalRoute);
                         tmpRealCount++;
-                        console.log(tmpOptimalRoute);//!!!!!!!!!!!
+                        //console.log(tmpOptimalRoute);//!!!!!!!!!!!
                     }
                 }
             }

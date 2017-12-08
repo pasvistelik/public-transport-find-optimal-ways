@@ -407,8 +407,9 @@ class Points {
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
                         this.finalPoint.arrivalTime = arrivalTime + newGoingTimeFromNewToFinal;
-                        
                         this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;*/
+
+                        this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal);
 
                         selectedPoint = nextPoint;
 
