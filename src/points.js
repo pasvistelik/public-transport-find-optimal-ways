@@ -357,12 +357,12 @@ class Points {
                 minimalDistance = dist;
             }
         }
-        console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
-        return;//1!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@#########################$$$$$$$$$$$$$$$$$$$$$$$$$$11112222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333111111
+        //console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
+        //return;//1!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@#########################$$$$$$$$$$$$$$$$$$$$$$$$$$11112222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333111111
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             var oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;
-            for (var selectedPoint = this.finalPoint.previousPoint, timeSeconds = selectedPoint.totalTimeSeconds; ;){
+            for (var selectedPoint = this.finalPoint.previousPoint; ;){
                 
                 if (distance(selectedPoint.coords, this.finalPoint.coords) === minimalDistance) break; // || selectedPoint.totalTimeSeconds > timeSeconds + 600
 
@@ -373,32 +373,24 @@ class Points {
                 if (nextStation != null) // Если остановка не является конечной, то:
                 {
                     // Загружаем расписание:
-                    var table = selectedRoute.getTimetable(selectedPointStation);
+                    var table = selectedRoute.getTimetable(nextStation);
                     if (table == null) continue;
-                    // Блокируем попытку попасть указанным транспортом на указанную остановку:
-                    //if (myIgnoringFragments!= null && myIgnoringFragments.contains(nextStation.hashcode, selectedRoute.hashcode, selectedPointStationHashcode)) continue;
     
                     if (table.type === TableType.table) // Если это точное расписание, то:
                     {
                         // Момент, когда мы сядем в транспорт:
                         var momentWhenSitInTransport = time + selectedPoint.totalTimeSeconds;
-    
-                        // Расписание данного транспорта на следующей остановке:
-                        var tbl = selectedRoute.getTimetable(nextStation);
                         
                         // (сколько будем ехать до следующей остановки):
-                        var goingOnTransportTime = tbl.findTimeAfter(momentWhenSitInTransport, day);
+                        var goingOnTransportTime = table.findTimeAfter(momentWhenSitInTransport, day);
     
                         var arrivalTime = selectedPoint.totalTimeSeconds + goingOnTransportTime;
-                        var onNextPointTotalTimeSeconds = arrivalTime;
                         
-                        
-
                         var nextPoint = this.findElement(nextStation);
                         
                         nextPoint.fromWhichRoute = selectedRoute;
                         nextPoint.previousPoint = selectedPoint;
-                        nextPoint.totalTimeSeconds = onNextPointTotalTimeSeconds;
+                        nextPoint.totalTimeSeconds = arrivalTime;
                         nextPoint.fromWhichStation = selectedPointStation;
                         nextPoint.arrivalTime = arrivalTime;
                         nextPoint.dispatchTime = arrivalTime;
@@ -409,16 +401,16 @@ class Points {
 
                         if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
-                        this.finalPoint.previousPoint = nextPoint;
+                        /*this.finalPoint.previousPoint = nextPoint;
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
                         this.finalPoint.arrivalTime = arrivalTime + newGoingTimeFromNewToFinal;
                         //let oldValue = this.finalPoint.totalGoingTimeSeconds;
-                        this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;
+                        this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;*/
 
                         selectedPoint = nextPoint;
 
-                        //console.log("Changed:  "+oldValue+" to "+this.finalPoint.totalGoingTimeSeconds);
+                        console.log("[TMP]: Changed:  "+oldValue+" to "+this.finalPoint.totalGoingTimeSeconds);
                     }
                     else if (table.type === TableType.periodic) {
                         throw new Error();
