@@ -100,8 +100,10 @@ class OptimalRoutesCollection extends Array {
                     var ignoringRoutesAdd = [];
                     ignoringRoutesAdd = ignoringRoutesAdd.concat(selectedOptimalRoute.ignoringRoutes);
                     ignoringRoutesAdd.push(r);
-                    myPoints = new Points(nowPos, needPos);
+
                     clearStations(stationsList);
+
+                    myPoints = new Points(nowPos, needPos);
                     var tmpOptimalRoute = new OptimalRoute(myPoints, stationsList, /*nowPos, needPos,*/ time, types, speed, dopTimeMinutes, ignoringRoutesAdd);
                     
                     tmpAllCount++;
@@ -119,7 +121,7 @@ class OptimalRoutesCollection extends Array {
                         if (ok) continue;
                         this.push(tmpOptimalRoute);
                         tmpRealCount++;
-                        //console.log(tmpOptimalRoute);//!!!!!!!!!!!
+                        console.log(tmpOptimalRoute);//!!!!!!!!!!!
                     }
                 }
             }
@@ -136,7 +138,10 @@ class OptimalRoutesCollection extends Array {
 export default OptimalRoutesCollection;
 
 function clearStations(stations){
+    var j = 0;
     for(let i = 0, n = stations.length; i < n; i++){
+        if(stations[i].point) j++;
         stations[i].point = null;
     }
+    console.log("Cleared "+j+" stations.");
 }
