@@ -385,7 +385,7 @@ class Points {
                         var goingOnTransportTime = table.findTimeAfter(momentWhenSitInTransport, day);
     
                         var arrivalTime = selectedPoint.totalTimeSeconds + goingOnTransportTime;
-                        
+
                         var nextPoint = this.findElement(nextStation);
                         
                         nextPoint.fromWhichRoute = selectedRoute;
@@ -401,16 +401,18 @@ class Points {
 
                         if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
+                        let oldValue = this.finalPoint.totalGoingTimeSeconds;
+
                         /*this.finalPoint.previousPoint = nextPoint;
                         this.finalPoint.fromWhichStation = nextStation;
                         this.finalPoint.totalTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal;
                         this.finalPoint.arrivalTime = arrivalTime + newGoingTimeFromNewToFinal;
-                        //let oldValue = this.finalPoint.totalGoingTimeSeconds;
+                        
                         this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;*/
 
                         selectedPoint = nextPoint;
 
-                        console.log("[TMP]: Changed:  "+oldValue+" to "+this.finalPoint.totalGoingTimeSeconds);
+                        console.log("[TMP]: Changed:  "+oldValue+" to "+(nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal));
                     }
                     else if (table.type === TableType.periodic) {
                         throw new Error();
