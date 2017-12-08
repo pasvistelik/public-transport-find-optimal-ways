@@ -402,7 +402,7 @@ class Points {
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                        if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
+                        //if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                         let oldValue = this.finalPoint.totalGoingTimeSeconds;
 
@@ -412,7 +412,7 @@ class Points {
                         this.finalPoint.arrivalTime = arrivalTime + newGoingTimeFromNewToFinal;
                         this.finalPoint.totalGoingTimeSeconds = nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal;*/
 
-                        this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal);
+                        this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal, true);
 
                         selectedPoint = nextPoint;
 
