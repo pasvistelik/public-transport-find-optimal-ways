@@ -43,6 +43,7 @@ class OptimalRoutesCollection extends Array {
     }*/
     constructor(allStations, nowPos, needPos, time, types, speed, dopTimeMinutes, oneWayOnly) {
         super();
+        dopTimeMinutes = -2;
         //console.log("TEST_111111111111111111111111111111111111111111111111111111111111111");/////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!
         this.getOptimalWays = function() {
             var result = [];
