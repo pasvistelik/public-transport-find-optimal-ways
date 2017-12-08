@@ -58,7 +58,7 @@
         else tr = "пешком";
         //if (this.previousPoint != null) p = this.previousPoint.toString();
         //else p = "null";
-        return /*p+" -->> */"(" + this.totalTimeSeconds + ") " + to + " (" + tr + ")"; // from " + from + " to
+        return to + " (" + tr + ")";//"(" + this.totalTimeSeconds + ") " + to + " (" + tr + ")"; // from " + from + " to
     }
     getTotalGoingTime() {
         var goingTime = 0;

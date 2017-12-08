@@ -320,7 +320,7 @@ class Points {
                 //var momentOfDispatchFromPoint = point.arrivalTime + reservedTime + table.findTimeBefore(time + currentPoint.arrivalTime, day);
 
                 currentPoint.dispatchTime = momentOfDispatchFromPoint;
-                if(currentPoint.fromWhichRoute != selectedRoute) {
+                if (currentPoint.fromWhichRoute != selectedRoute) {
                     currentPoint.totalTimeSeconds = currentPoint.arrivalTime + reservedTime;
                 }
                 else {
@@ -337,7 +337,7 @@ class Points {
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(this.finalPoint.previousPoint == null) return;
+        if (this.finalPoint.previousPoint == null) return;
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
