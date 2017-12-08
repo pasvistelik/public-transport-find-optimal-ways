@@ -397,7 +397,7 @@ class Points {
                         nextPoint.totalGoingTimeSeconds = selectedPoint.totalGoingTimeSeconds;
                         nextPoint.isVisited = true;*/
 
-                        nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds);
+                        nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds, true);
 
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);

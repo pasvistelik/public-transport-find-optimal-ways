@@ -23,8 +23,8 @@
         this.arrivalTime = 0;
         this.dispatchTime = 2160000000;
     }
-    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime, dispatchTimeFromPrevious, totalGoingTimeSeconds) {
-        if (totalTimeSeconds < this.totalTimeSeconds) {
+    tryUpdate(totalTimeSeconds, previousPoint, fromWhichStation, fromWhichRoute, arrivalTime, dispatchTime, dispatchTimeFromPrevious, totalGoingTimeSeconds, updateIgnore) {
+        if (totalTimeSeconds < this.totalTimeSeconds || updateIgnore) {
         //if (totalGoingTimeSeconds < this.totalGoingTimeSeconds) {
             this.fromWhichRoute = fromWhichRoute;
             this.previousPoint = previousPoint;
