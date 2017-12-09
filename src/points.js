@@ -13,6 +13,21 @@ function getHeuristicTime(a_coords, b_coords) {
 
 const TableType = { table: 1, periodic: 2 };
 
+function distanceBetweenStations(station_a, station_b){
+    var result = null;
+    if (!(station_a.distance_to)) station_a.distance_to = [];
+    if (!(station_b.distance_to)) station_b.distance_to = [];
+    if (result=station_a.distance_to[station_b.hashcode]){
+        return result;
+    }
+    else {
+        var dist = distance(station_a.coords, station_b.coords);
+        station_a.distance_to[station_b.hashcode] = dist;
+        station_b.distance_to[station_a.hashcode] = dist;
+        return dist;
+    }
+}
+
 class Points {
     constructor(nowPos, needPos) {
         this.collection = [];
@@ -194,7 +209,8 @@ class Points {
                     // Блокируем попытку дойти пешком до указанной остановки:
                     if (myIgnoringFragments != null && myIgnoringFragments.contains(p.stationCode, null, selectedPointStationHashcode)) continue;
                     
-                    goingTime = getTimeForGoingTo(distance(selectedPointCoords, p.coords), speed);
+                    //goingTime = getTimeForGoingTo(distance(selectedPointCoords, p.coords), speed);//!!!!!!!!!!!!!!!!!!!!!111111111111111111_test
+                    goingTime = getTimeForGoingTo(distanceBetweenStations(selectedPointStation, p.station), speed);
 
                     var arrivalTime = selectedPointTotalTimeSeconds + goingTime;
                     newTime = arrivalTime + reservedTime;
