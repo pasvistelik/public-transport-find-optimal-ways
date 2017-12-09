@@ -15,8 +15,6 @@ const TableType = { table: 1, periodic: 2 };
 
 function distanceBetweenStations(station_a, station_b){
     var result = null;
-    if (!(station_a.distance_to)) station_a.distance_to = [];
-    if (!(station_b.distance_to)) station_b.distance_to = [];
     if (result=station_a.distance_to[station_b.hashcode]){
         return result;
     }
