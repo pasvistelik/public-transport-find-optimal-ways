@@ -350,7 +350,7 @@ class Points {
                 var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                 var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal + 600) break;
+                if (oldTotalTimeSeconds + 600 < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                 if (newDistance < minimalDistance){
                     minimalDistance = newDistance;
