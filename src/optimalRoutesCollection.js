@@ -82,11 +82,11 @@ class OptimalRoutesCollection extends Array {
         
 
         //oneWayOnly = true;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        var maxCount = 200, totalCount = 0;
+        var maxCount = 100;
         if (!oneWayOnly){
         
             //TODO: use solutions tree
-            for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null && totalCount < maxCount; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark(), totalCount++) {
+            for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null && tmpAllCount < maxCount; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark()) {
                 var ddd = 0.9;
 
                 ignoringRoutes = [];
