@@ -360,7 +360,7 @@ class Points {
                 if (appendedGoingTime <= 0) appendedGoingTime = 0.999;
 
                 if (newDistance < minimalDistance){
-                    if ((appendedGoingTime / newAppendedTimeSeconds).toFixed(2) > 0.5){
+                    if ((appendedGoingTime / newAppendedTimeSeconds) > 0.9){
                         minimalDistance = newDistance;
                         NewStation = nextStation;
                         appendedTimeSeconds = newAppendedTimeSeconds;
@@ -375,10 +375,12 @@ class Points {
                 throw new Error();
             }
         }
-        var appendedGoingTime = getTimeForGoingTo(oldDistance-minimalDistance, speed);
-        if(appendedGoingTime <= 0) appendedGoingTime = 0.999;
-        if (minimalDistance < oldDistance) console.log("!!!!!["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
+        //var appendedGoingTime = getTimeForGoingTo(oldDistance-minimalDistance, speed);
+        //if(appendedGoingTime <= 0) appendedGoingTime = 0.999;
+        //if (minimalDistance < oldDistance) console.log("!!!!!["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
+
         return;//!!!!!!!!!!!!!!
+        
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             var oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;
