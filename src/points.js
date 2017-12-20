@@ -354,10 +354,11 @@ class Points {
 
                 //nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds, true);
 
+                var newAppendedTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal - oldTotalTimeSeconds;
+                var appendedGoingTime = getTimeForGoingTo(oldDistance - newDistance, speed);
+                if (appendedGoingTime <= 0) appendedGoingTime = 0.999;
+
                 if (newDistance < minimalDistance){
-                    var appendedGoingTime = getTimeForGoingTo(oldDistance - newDistance, speed);
-                    if (appendedGoingTime <= 0) appendedGoingTime = 0.999;
-                    var newAppendedTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal - oldTotalTimeSeconds;
                     if ((appendedGoingTime / newAppendedTimeSeconds).toFixed(2) > 0.5){
                         minimalDistance = newDistance;
                         NewStation = nextStation;
@@ -367,7 +368,7 @@ class Points {
                         
                     }
                 }
-                console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+nextStation.name+"("+newDistance+")");
+                console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+newAppendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/newAppendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+nextStation.name+"("+newDistance+"), minimal now is "+minimalDistance);
             }
             else if (table.type === TableType.periodic) {
                 throw new Error();
