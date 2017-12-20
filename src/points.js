@@ -313,7 +313,9 @@ class Points {
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
         if (selectedRoute == null) return;
         
+        
         var startStation = this.finalPoint.previousPoint.station;
+        var oldStation = startStation, NewStation = startStation;
         if (startStation == null) return;
         var minimalDistance = distance(startStation.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
@@ -325,9 +327,10 @@ class Points {
             //console.log("Check to change "+minimalDistance+" to "+dist);
             if (dist < minimalDistance){
                 minimalDistance = dist;
+                NewStation = nextStation;
             }
         }
-        //console.log("!!!!!!!!!!! Can change "+oldDistance+" to "+minimalDistance);
+        console.log("!!!!!!!!!!! Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
         //return;//1!!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@#########################$$$$$$$$$$$$$$$$$$$$$$$$$$11112222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222233333333333333333333333333333333333333333333333333333333111111
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){

@@ -87,7 +87,7 @@ class OptimalRoutesCollection extends Array {
         
             //TODO: use solutions tree
             for (var selectedOptimalRoute = this[0]; selectedOptimalRoute != null && totalCount < maxCount; selectedOptimalRoute.setVisited(), selectedOptimalRoute = this.selectOptimalRouteWithMinimalMark(), totalCount++) {
-                var ddd = 0.85;
+                var ddd = 0.9;
 
                 ignoringRoutes = [];
                 // Проходим по всем ребрам выбранного пути и строим новые маршруты при удалении ребер:
@@ -108,7 +108,7 @@ class OptimalRoutesCollection extends Array {
                     
                     tmpAllCount++;
 
-                    if (tmpOptimalRoute.oldTotalTimeSeconds <= this[0].oldTotalTimeSeconds / ddd + 600) {
+                    if (tmpOptimalRoute.oldTotalTimeSeconds <= this[0].oldTotalTimeSeconds / ddd + 1200) {
                         tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
                         var ok = false;
                         for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
