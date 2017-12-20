@@ -355,10 +355,11 @@ class Points {
                 if (newDistance < minimalDistance){
                     var appendedGoingTime = getTimeForGoingTo(oldDistance - newDistance, speed);
                     if (appendedGoingTime <= 0) appendedGoingTime = 0.999;
-                    if ((appendedGoingTime / appendedTimeSeconds).toFixed(2) > 0.9){
+                    var newAppendedTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal - oldTotalTimeSeconds;
+                    if ((appendedGoingTime / newAppendedTimeSeconds).toFixed(2) > 0.9){
                         minimalDistance = newDistance;
                         NewStation = nextStation;
-                        appendedTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal - oldTotalTimeSeconds;
+                        appendedTimeSeconds = newAppendedTimeSeconds;
                     }
                 }
             }
