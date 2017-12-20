@@ -351,6 +351,20 @@ class Points {
         }
 
 
+        
+
+
+
+    }
+    countShortWay(ignoringRoutes, myIgnoringFragments, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType) {
+        //try {
+
+        var dayOfWeek = (new Date()).getDay();
+
+        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, dayOfWeek, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType);
+        this.optimizeFindedWay(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if (this.finalPoint.previousPoint == null) return;
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
@@ -415,7 +429,7 @@ class Points {
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                        //if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
+                        if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                         let oldValue = this.finalPoint.totalGoingTimeSeconds;
 
@@ -442,15 +456,9 @@ class Points {
 
 
 
-    }
-    countShortWay(ignoringRoutes, myIgnoringFragments, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType) {
-        //try {
 
-        var dayOfWeek = (new Date()).getDay();
 
-        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, dayOfWeek, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType);
-        this.optimizeFindedWay(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
-        this.fixTimeAttributes(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
+        //this.fixTimeAttributes(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);//!!!!!!!!!!!!!!!!!!!!!!
 
         //}
         //catch(e) {
