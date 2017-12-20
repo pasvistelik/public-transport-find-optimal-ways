@@ -308,63 +308,6 @@ class Points {
 
 
 
-        
-
-
-        //console.log(tmp);
-    }
-    fixTimeAttributes(day, time, reservedTime, speed) {
-        //...
-        
-        if(this.finalPoint.previousPoint == null) return;
-        // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
-        for (let nextPoint = this.finalPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint; nextPoint !== this.startPoint; nextPoint = nextPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint) {
-            
-            // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
-            if (selectedRoute == null || currentPoint === this.startPoint /*|| currentPoint.fromWhichRoute === selectedRoute*/) continue;
-            
-            // Загружаем расписание:
-            var table = selectedRoute.getTimetable(currentPoint.station);
-            if (table == null) continue;
-
-            if (table.type === TableType.table) // Если это точное расписание, то:
-            {
-                // Момент отправки.
-                //var momentOfDispatchFromPoint = nextPoint.totalTimeSeconds + table.findTimeBefore(time + nextPoint.totalTimeSeconds, day);
-                var momentOfDispatchFromPoint = nextPoint.dispatchTime + table.findTimeBefore(time + nextPoint.dispatchTime, day);
-                //var momentOfDispatchFromPoint = point.arrivalTime + reservedTime + table.findTimeBefore(time + currentPoint.arrivalTime, day);
-
-                currentPoint.dispatchTime = momentOfDispatchFromPoint;
-                if (currentPoint.fromWhichRoute != selectedRoute) {
-                    currentPoint.totalTimeSeconds = currentPoint.arrivalTime + reservedTime;
-                }
-                else {
-                    currentPoint.arrivalTime = momentOfDispatchFromPoint
-                    currentPoint.totalTimeSeconds = momentOfDispatchFromPoint;
-                }
-                
-            }
-            else  { //if (table.type === TableType.periodic)
-                throw new Error();
-            }
-            
-        }
-
-
-        
-
-
-
-    }
-    countShortWay(ignoringRoutes, myIgnoringFragments, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType) {
-        //try {
-
-        var dayOfWeek = (new Date()).getDay();
-
-        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, dayOfWeek, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType);
-        this.optimizeFindedWay(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
-
-
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if (this.finalPoint.previousPoint == null) return;
         var selectedRoute = this.finalPoint.previousPoint.fromWhichRoute;
@@ -453,6 +396,63 @@ class Points {
             }
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //console.log(tmp);
+    }
+    fixTimeAttributes(day, time, reservedTime, speed) {
+        //...
+        
+        if(this.finalPoint.previousPoint == null) return;
+        // Сокращаем время ходьбы пешком до минимума и избавляемся от "бессмысленных" пересадок, сохраняя общее время неизменным:
+        for (let nextPoint = this.finalPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint; nextPoint !== this.startPoint; nextPoint = nextPoint.previousPoint, selectedRoute = nextPoint.fromWhichRoute, currentPoint = nextPoint.previousPoint) {
+            
+            // Рассматриваем вершину только если использованные маршруты не совпадают. Пути "пешком" не рассматриваем.
+            if (selectedRoute == null || currentPoint === this.startPoint /*|| currentPoint.fromWhichRoute === selectedRoute*/) continue;
+            
+            // Загружаем расписание:
+            var table = selectedRoute.getTimetable(currentPoint.station);
+            if (table == null) continue;
+
+            if (table.type === TableType.table) // Если это точное расписание, то:
+            {
+                // Момент отправки.
+                //var momentOfDispatchFromPoint = nextPoint.totalTimeSeconds + table.findTimeBefore(time + nextPoint.totalTimeSeconds, day);
+                var momentOfDispatchFromPoint = nextPoint.dispatchTime + table.findTimeBefore(time + nextPoint.dispatchTime, day);
+                //var momentOfDispatchFromPoint = point.arrivalTime + reservedTime + table.findTimeBefore(time + currentPoint.arrivalTime, day);
+
+                currentPoint.dispatchTime = momentOfDispatchFromPoint;
+                if (currentPoint.fromWhichRoute != selectedRoute) {
+                    currentPoint.totalTimeSeconds = currentPoint.arrivalTime + reservedTime;
+                }
+                else {
+                    currentPoint.arrivalTime = momentOfDispatchFromPoint
+                    currentPoint.totalTimeSeconds = momentOfDispatchFromPoint;
+                }
+                
+            }
+            else  { //if (table.type === TableType.periodic)
+                throw new Error();
+            }
+            
+        }
+
+
+        
+
+
+
+    }
+    countShortWay(ignoringRoutes, myIgnoringFragments, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType) {
+        //try {
+
+        var dayOfWeek = (new Date()).getDay();
+
+        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, dayOfWeek, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType);
+        this.optimizeFindedWay(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
+
+
+        
 
 
 
