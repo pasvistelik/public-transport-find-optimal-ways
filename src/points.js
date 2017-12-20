@@ -90,17 +90,18 @@ class Points {
         }
         return null;
     }
-    countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime) {
+    countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime, timeType) {
 
         const overLimitResedvedTime = 1200;
 
         for (var selectedPoint = this.getNextUnvisitedPoint(), selectedPointStation, selectedPointTotalTimeSeconds, selectedPointStationHashcode, selectedPointFromWhichRoute, momentWhenComingToStation, routesOnStation, selectedPointCoords; selectedPoint != null; selectedPoint = this.getNextUnvisitedPoint()) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             selectedPointTotalTimeSeconds = selectedPoint.totalTimeSeconds;
-            /*if (selectedPointTotalTimeSeconds + selectedPoint.heuristicTimeToFinalPoint > this.finalPoint.totalTimeSeconds + overLimitResedvedTime) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
+            if (selectedPointTotalTimeSeconds + selectedPoint.heuristicTimeToFinalPoint > this.finalPoint.totalTimeSeconds + overLimitResedvedTime) //... Пропускаем и удаляем, если значение метки превышает минимальное время до пункта назначения.
             {
                 break;
-            }*/
+            }
+
             selectedPointStation = selectedPoint.station;
             selectedPointStationHashcode = selectedPointStation.hashcode;
             selectedPointFromWhichRoute = selectedPoint.fromWhichRoute;
@@ -357,15 +358,13 @@ class Points {
         
         var startStation = this.finalPoint.previousPoint.station;
         if (startStation == null) return;
-        var minimalDistance = distance(this.finalPoint.previousPoint.coords, this.finalPoint.coords);
+        var minimalDistance = distance(startStation.coords, this.finalPoint.coords);
         var oldDistance = minimalDistance;
-        for (var selectedPoint = this.finalPoint.previousPoint, nextPoint; ; selectedPoint = nextPoint){
-            var selectedPointStation = selectedPoint.station;
-            var nextStation = selectedRoute.getNextStation(selectedPointStation);
+        for (var selectedPointStation = startStation, nextStation; ; selectedPointStation = nextStation){
+            nextStation = selectedRoute.getNextStation(selectedPointStation);
             //console.log(nextStation);//11111111111111
             if (nextStation == null || nextStation === selectedPointStation || nextStation === startStation) break;
-            nextPoint = this.findElement(nextStation);
-            var dist = distance(nextPoint.coords, this.finalPoint.coords);
+            var dist = distance(nextStation.coords, this.finalPoint.coords);
             //console.log("Check to change "+minimalDistance+" to "+dist);
             if (dist < minimalDistance){
                 minimalDistance = dist;
@@ -416,7 +415,7 @@ class Points {
                         var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                         var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                        if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
+                        //if (oldTotalTimeSeconds < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                         let oldValue = this.finalPoint.totalGoingTimeSeconds;
 
@@ -444,14 +443,14 @@ class Points {
 
 
     }
-    countShortWay(ignoringRoutes, myIgnoringFragments, time, types, speed, reservedTime) {
+    countShortWay(ignoringRoutes, myIgnoringFragments, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType) {
         //try {
 
-        var day = (new Date()).getDay();
+        var dayOfWeek = (new Date()).getDay();
 
-        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, day, time, types, speed, reservedTime);
-        this.optimizeFindedWay(day, time, reservedTime, speed);
-        this.fixTimeAttributes(day, time, reservedTime, speed);
+        this.countFirstShortestWay(ignoringRoutes, myIgnoringFragments, dayOfWeek, timeSeconds, transportTypes, goingSpeed, reservedTimeSeconds, timeType);
+        this.optimizeFindedWay(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
+        this.fixTimeAttributes(dayOfWeek, timeSeconds, reservedTimeSeconds, goingSpeed);
 
         //}
         //catch(e) {
