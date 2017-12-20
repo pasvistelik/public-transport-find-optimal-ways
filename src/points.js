@@ -350,7 +350,7 @@ class Points {
                 var newDistance = distance(nextPoint.coords, this.finalPoint.coords);
                 var newGoingTimeFromNewToFinal = getTimeForGoingTo(newDistance, speed);
 
-                if (oldTotalTimeSeconds + 1200 < arrivalTime + newGoingTimeFromNewToFinal) break;
+                if (oldTotalTimeSeconds + 600 < arrivalTime + newGoingTimeFromNewToFinal) break;
 
                 nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds, true);
 
@@ -380,7 +380,7 @@ class Points {
         //if (minimalDistance < oldDistance) console.log("!!!!!["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
 
         return;//!!!!!!!!!!!!!!
-        
+
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
             var oldTotalTimeSeconds = this.finalPoint.totalTimeSeconds;
