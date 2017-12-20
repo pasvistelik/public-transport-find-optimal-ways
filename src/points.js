@@ -352,7 +352,7 @@ class Points {
 
                 if (oldTotalTimeSeconds + 1200 < arrivalTime + newGoingTimeFromNewToFinal) break;
 
-                nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds, true);
+                //nextPoint.tryUpdate(arrivalTime, selectedPoint, selectedPointStation, selectedRoute, arrivalTime, arrivalTime, selectedPoint.dispatchTime, selectedPoint.totalGoingTimeSeconds, true);
 
                 if (newDistance < minimalDistance){
                     var appendedGoingTime = getTimeForGoingTo(oldDistance - newDistance, speed);
@@ -363,7 +363,8 @@ class Points {
                         NewStation = nextStation;
                         appendedTimeSeconds = newAppendedTimeSeconds;
 
-                        this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal, true);
+                        //this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal, true);
+                        console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
                     }
                 }
             }
@@ -373,7 +374,7 @@ class Points {
         }
         var appendedGoingTime = getTimeForGoingTo(oldDistance-minimalDistance, speed);
         if(appendedGoingTime <= 0) appendedGoingTime = 0.999;
-        if (minimalDistance < oldDistance) console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
+        if (minimalDistance < oldDistance) console.log("!!!!!["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
         return;//!!!!!!!!!!!!!!
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
