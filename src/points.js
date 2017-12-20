@@ -358,13 +358,13 @@ class Points {
                     var appendedGoingTime = getTimeForGoingTo(oldDistance - newDistance, speed);
                     if (appendedGoingTime <= 0) appendedGoingTime = 0.999;
                     var newAppendedTimeSeconds = arrivalTime + newGoingTimeFromNewToFinal - oldTotalTimeSeconds;
-                    if ((appendedGoingTime / newAppendedTimeSeconds).toFixed(2) > 0.9){
+                    if ((appendedGoingTime / newAppendedTimeSeconds).toFixed(2) > 0.5){
                         minimalDistance = newDistance;
                         NewStation = nextStation;
                         appendedTimeSeconds = newAppendedTimeSeconds;
 
                         //this.finalPoint.tryUpdate(arrivalTime + newGoingTimeFromNewToFinal, nextPoint, nextStation, null, arrivalTime + newGoingTimeFromNewToFinal, 2160000000, nextPoint.dispatchTime, nextPoint.totalGoingTimeSeconds + newGoingTimeFromNewToFinal, true);
-                        console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
+                        //console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+appendedGoingTime+" going seconds, k = "+(appendedGoingTime/appendedTimeSeconds).toFixed(2)+"]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
                     }
                 }
             }
