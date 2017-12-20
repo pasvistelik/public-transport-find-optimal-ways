@@ -362,7 +362,7 @@ class Points {
                 throw new Error();
             }
         }
-        if (minimalDistance < oldDistance) console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, "+(minimalDistance-oldDistance)+"m ]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
+        if (minimalDistance < oldDistance) console.log("["+selectedRoute.type+" "+selectedRoute.number+"][+"+appendedTimeSeconds+" seconds, -"+getTimeForGoingTo(minimalDistance-oldDistance, speed)+" going seconds]: Can change "+oldStation.name+"("+oldDistance+") to "+NewStation.name+"("+minimalDistance+")");
         //return;
         //console.log("111111111111111111111111111111111111");
         if (oldDistance > minimalDistance){
