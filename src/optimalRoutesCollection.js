@@ -82,7 +82,7 @@ class OptimalRoutesCollection extends Array {
         
 
         //oneWayOnly = true;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        var maxCount = 100;
+        var maxCount = 500;
         if (!oneWayOnly){
         
             //TODO: use solutions tree
@@ -108,7 +108,7 @@ class OptimalRoutesCollection extends Array {
                     
                     tmpAllCount++;
 
-                    if (tmpOptimalRoute.oldTotalTimeSeconds <= this[0].oldTotalTimeSeconds / ddd + 1200) {
+                    if (tmpOptimalRoute.oldTotalTimeSeconds <= this[0].oldTotalTimeSeconds /*/ ddd*/ + 1200) {
                         tmpOptimalRoute.hash = JSON.stringify(tmpOptimalRoute.points);
                         var ok = false;
                         for (var j = 0, m = this.length, opt = this[0]; j < m; opt = this[++j]) {
